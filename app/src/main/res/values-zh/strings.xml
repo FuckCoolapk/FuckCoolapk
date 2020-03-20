@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="removeStartupAds">去除启动广告</string>
+    <string name="goToAppTabByDefault">默认转到应用页</string>
+</resources>

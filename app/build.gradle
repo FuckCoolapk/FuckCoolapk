@@ -7,9 +7,10 @@ android {
         Date date = new Date()
         applicationId "com.fuckcoolapk"
         minSdkVersion 21
-        targetSdkVersion 29
+        //noinspection ExpiredTargetSdkVersion
+        targetSdkVersion 22
         versionCode = date.format("yyyyMMdd").toInteger()
-        versionName "0.0.1"
+        versionName '0.0.2'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -23,4 +24,5 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly 'de.robv.android.xposed:api:82'
+    implementation 'androidx.annotation:annotation:1.1.0'
 }
