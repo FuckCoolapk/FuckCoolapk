@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="removeStartupAds">去除啟動廣告</string>
+    <string name="goToAppTabByDefault">預設轉到應用頁</string>
+    <string name="adminModeWarn">建議關閉，此功能很可能導致你號沒了！</string>
+    <string name="adminMode">開啟管理員模式</string>
 </resources>

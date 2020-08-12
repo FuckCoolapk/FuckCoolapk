@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Fuck Coolapk</string>
     <string name="removeStartupAds">Remove startup ads</string>
+    <string name="adminMode">Turn on admin mode</string>
+    <string name="adminModeWarn">It is recommended to turn it off, this function may cause your account to disappear!</string>
     <string name="goToAppTabByDefault">Go to app tab by default</string>
 </resources>
