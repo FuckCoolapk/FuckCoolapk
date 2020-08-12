@@ -17,6 +17,7 @@ import java.io.IOException;
 
 public class MainActivity extends Activity {
     private Switch removeStartupAdsSwitch;
+    private Switch checkFeedStatusSwitch;
     private Switch adminModeSwitch;
     private Switch goToAppTabByDefaultSwitch;
 
@@ -28,11 +29,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         //
         removeStartupAdsSwitch = findViewById(R.id.removeStartupAdsSwitch);
+        checkFeedStatusSwitch = findViewById(R.id.checkFeedStatusSwitch);
         adminModeSwitch = findViewById(R.id.adminModeSwitch);
         goToAppTabByDefaultSwitch = findViewById(R.id.goToAppTabByDefaultSwitch);
         //
         SharedPreferences.Editor editor = getSharedPreferences("fuckcoolapk", MODE_WORLD_READABLE).edit();
         removeStartupAdsSwitch.setChecked(Boolean.valueOf(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/removeStartupAds.txt")));
+        checkFeedStatusSwitch.setChecked(Boolean.valueOf(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/checkFeedStatus.txt")));
         adminModeSwitch.setChecked(Boolean.valueOf(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/adminMode.txt")));
         goToAppTabByDefaultSwitch.setChecked(Boolean.valueOf(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/goToAppTabByDefault.txt")));
         if (SystemPropertyUtil.getSystemProperty("ro.product.cpu.abi").contains("x86")){
@@ -42,35 +45,33 @@ public class MainActivity extends Activity {
         }
         //Toast.makeText(this,readStringFromFile(Environment.getExternalStorageDirectory().toString()+"/Android/data/"+getApplication().getPackageName()+"/files/removeStartupAds.txt"),Toast.LENGTH_SHORT).show();
         //
-        removeStartupAdsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    writeStringToFile("true", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "removeStartupAds.txt");
-                } else {
-                    writeStringToFile("false", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "removeStartupAds.txt");
-                }
+        removeStartupAdsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                writeStringToFile("true", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "removeStartupAds.txt");
+            } else {
+                writeStringToFile("false", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "removeStartupAds.txt");
             }
         });
-        adminModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    writeStringToFile("true", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "adminMode.txt");
-                    Toast.makeText(MainActivity.this,R.string.adminModeWarn,Toast.LENGTH_SHORT).show();
-                } else {
-                    writeStringToFile("false", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "adminMode.txt");
-                }
+        checkFeedStatusSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                writeStringToFile("true", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "checkFeedStatus.txt");
+            } else {
+                writeStringToFile("false", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "checkFeedStatus.txt");
             }
         });
-        goToAppTabByDefaultSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    writeStringToFile("true", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "goToAppTabByDefault.txt");
-                } else {
-                    writeStringToFile("false", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "goToAppTabByDefault.txt");
-                }
+        adminModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                writeStringToFile("true", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "adminMode.txt");
+                Toast.makeText(MainActivity.this,R.string.adminModeWarn,Toast.LENGTH_SHORT).show();
+            } else {
+                writeStringToFile("false", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "adminMode.txt");
+            }
+        });
+        goToAppTabByDefaultSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                writeStringToFile("true", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "goToAppTabByDefault.txt");
+            } else {
+                writeStringToFile("false", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "goToAppTabByDefault.txt");
             }
         });
     }

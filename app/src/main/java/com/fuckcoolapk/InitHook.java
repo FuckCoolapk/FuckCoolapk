@@ -2,6 +2,7 @@ package com.fuckcoolapk;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +26,7 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import io.reactivex.rxjava3.core.Observable;
 
 import static android.content.ContentValues.TAG;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
@@ -111,6 +114,43 @@ public class InitHook implements IXposedHookLoadPackage {
                 });
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+            if (Boolean.valueOf(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/checkFeedStatus.txt"))) {
+                try {
+                    findAndHookMethod("com.coolapk.market.view.feedv8.BaseFeedContentHolder$startSubmitFeed$2", lpparam.classLoader, "onNext", "com.coolapk.market.network.Result", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            //Class clazz = XposedHelpers.findClass("com.coolapk.market.network.Result", lpparam.classLoader);
+                            //o = param.args[0];
+                            Object feed = XposedHelpers.callMethod(param.args[0],"getData");
+                            String uri = (String) XposedHelpers.callMethod(feed,"getShareUrl");
+                            new Thread(() -> {
+                                try {
+                                    Thread.sleep(1000);
+                                    new GetUtil().sendGet(uri, result -> {
+                                        if (result.contains("该动态存在安全风险，暂时无法访问")|result.contains("你无法查看该内容")|result.contains("你查看的内容已被屏蔽")){
+                                            Toast.makeText(activity,"动态已被折叠",Toast.LENGTH_SHORT).show();
+                                        }else {
+                                            Toast.makeText(activity,"动态状态正常",Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();
+                            Log.d("onfuckcoolapk",uri);
+                            //result.getData().getUrl();
+                            super.beforeHookedMethod(param);
+                        }
+
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            super.afterHookedMethod(param);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             if (Boolean.valueOf(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/adminMode.txt"))) {
                 try {

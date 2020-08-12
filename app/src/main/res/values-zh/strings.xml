@@ -4,4 +4,5 @@
     <string name="goToAppTabByDefault">默认转到应用页</string>
     <string name="adminModeWarn">建议关闭，此功能很可能导致你号没了！</string>
     <string name="adminMode">开启管理员模式</string>
+    <string name="checkFeedStatus">检查动态状态</string>
 </resources>

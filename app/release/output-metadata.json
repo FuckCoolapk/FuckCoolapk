@@ -12,7 +12,7 @@
       "filters": [],
       "properties": [],
       "versionCode": 20200812,
-      "versionName": "0.0.3",
+      "versionName": "0.0.4",
       "enabled": true,
       "outputFile": "app-release.apk"
     }

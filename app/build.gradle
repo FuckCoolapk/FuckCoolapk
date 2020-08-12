@@ -10,7 +10,7 @@ android {
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 22
         versionCode = date.format("yyyyMMdd").toInteger()
-        versionName '0.0.3'
+        versionName '0.0.4'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -20,6 +20,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -28,4 +32,6 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'commons-codec:commons-codec:20041127.091804'
     compileOnly 'com.squareup.okhttp3:okhttp:4.8.0'
+    compileOnly 'com.google.code.gson:gson:2.8.6'
+    compileOnly "io.reactivex.rxjava3:rxjava:3.0.5"
 }
