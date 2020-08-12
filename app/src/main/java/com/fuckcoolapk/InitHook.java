@@ -95,7 +95,6 @@ public class InitHook implements IXposedHookLoadPackage {
                                     new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            //...To-do
                                             dialog.dismiss();
                                         }
                                     });

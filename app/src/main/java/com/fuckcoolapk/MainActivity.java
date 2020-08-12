@@ -2,6 +2,7 @@ package com.fuckcoolapk;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 import android.widget.CompoundButton;
@@ -22,6 +23,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        //setMiuiTheme(MainActivity.this,0,mode);
         setContentView(R.layout.activity_main);
         //
         removeStartupAdsSwitch = findViewById(R.id.removeStartupAdsSwitch);
@@ -108,5 +111,14 @@ public class MainActivity extends Activity {
         String[] fileContentArr = new String(filecontent).split("\r\n");
 
         return fileContentArr[0];// 返回文件内容,默认编码
+    }
+    public static void setMiuiTheme(Activity act, int overrideTheme,int isnightmode) {
+        int themeResId = 0;
+        try {
+            themeResId = act.getResources().getIdentifier("Theme.DayNight", "style", "miui");
+        } catch (Throwable t) {}
+        if (themeResId == 0) themeResId = act.getResources().getIdentifier((isnightmode == Configuration.UI_MODE_NIGHT_YES) ? "Theme.Dark" : "Theme.Light", "style", "miui");
+        act.setTheme(themeResId);
+        act.getTheme().applyStyle(overrideTheme, true);
     }
 }
