@@ -11,7 +11,6 @@ android {
         targetSdkVersion 22
         versionCode = date.format("yyyyMMdd").toInteger()
         versionName '0.0.5'
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
