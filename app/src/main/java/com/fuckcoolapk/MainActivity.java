@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class MainActivity extends Activity {
         SharedPreferences.Editor editor = getSharedPreferences("fuckcoolapk", MODE_WORLD_READABLE).edit();
         removeStartupAdsSwitch.setChecked(Boolean.valueOf(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/removeStartupAds.txt")));
         checkFeedStatusSwitch.setChecked(Boolean.valueOf(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/checkFeedStatus.txt")));
+        if (BuildConfig.BUILD_TYPE.equals("debug")) adminModeSwitch.setVisibility(View.VISIBLE);
         adminModeSwitch.setChecked(Boolean.valueOf(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/adminMode.txt")));
         goToAppTabByDefaultSwitch.setChecked(Boolean.valueOf(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/goToAppTabByDefault.txt")));
         if (SystemPropertyUtil.getSystemProperty("ro.product.cpu.abi").contains("x86")){
@@ -55,6 +57,7 @@ public class MainActivity extends Activity {
         checkFeedStatusSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 writeStringToFile("true", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "checkFeedStatus.txt");
+                Toast.makeText(MainActivity.this,R.string.checkFeedStatusWarn,Toast.LENGTH_SHORT).show();
             } else {
                 writeStringToFile("false", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "checkFeedStatus.txt");
             }

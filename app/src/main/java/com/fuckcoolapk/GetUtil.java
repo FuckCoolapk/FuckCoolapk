@@ -11,8 +11,9 @@ import java.net.URL;
 import java.util.concurrent.Executors;
 
 public class GetUtil {
-    public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36";
+    public static final String USER_AGENT = "Mozilla/5.0 (Linux; Android 5.1.1; G011A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.96 Mobile Safari/537.36";
     private Context context;
+
     public void sendGet(String getUrl, GetCallback callback) {
         GetTask task = new GetTask(getUrl, callback);
         task.executeOnExecutor(Executors.newCachedThreadPool());
@@ -57,10 +58,10 @@ public class GetUtil {
                 urlConn.connect();
                 // 判断请求是否成功
                 int statusCode = urlConn.getResponseCode();
-                if (statusCode == 200) {
-                    // 获取返回的数据
-                    result = streamToString(urlConn.getInputStream());
-                }
+                //if (statusCode == 200) {
+                // 获取返回的数据
+                result = streamToString(urlConn.getInputStream());
+                //}
                 // 关闭连接
                 urlConn.disconnect();
             } catch (Exception e) {

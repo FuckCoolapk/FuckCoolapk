@@ -12,11 +12,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class CoolapkAuthUtil {
-    public static String getAS() {
+    public static String getAS(String UUID) {
         String result = "";
         try {
             //String UUID = "140457a3-af3f-407c-9e70-18b6548757b7";
-            String UUID = java.util.UUID.randomUUID().toString();
+            //String UUID = java.util.UUID.randomUUID().toString();
             Calendar calendar = Calendar.getInstance();
             int time = Integer.parseInt((dateToStamp(calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DATE) + " " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND)).substring(0, 10)));
             //int time = (int) Calendar.getInstance(TimeZone.getTimeZone("UTC+8")).getTimeInMillis();
