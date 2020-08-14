@@ -14,19 +14,50 @@ public class GetUtil {
     public static final String USER_AGENT = "Mozilla/5.0 (Linux; Android 5.1.1; G011A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.96 Mobile Safari/537.36";
     private Context context;
 
+    /**
+     * 将输入流转换成字符串
+     *
+     * @param is 从网络获取的输入流
+     * @return 字符串
+     */
+    public static String streamToString(InputStream is) {
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = is.read(buffer)) != -1) {
+                out.write(buffer, 0, len);
+            }
+            out.close();
+            is.close();
+            byte[] byteArray = out.toByteArray();
+            return new String(byteArray);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public void sendGet(String getUrl, GetCallback callback) {
         GetTask task = new GetTask(getUrl, callback);
         task.executeOnExecutor(Executors.newCachedThreadPool());
     }
 
+    /*public void translate(Context context, String targetLan, String content, TranslateCallback callback) {
+        translate(context, LAN_AUTO, targetLan, content, callback);
+    }*/
+    public interface GetCallback {
+        void onGetDone(String result);
+    }
+
     /**
      * 使用异步任务来翻译，翻译完成后回调callback
      */
-    class GetTask extends AsyncTask<Void, Void, String> {
+    static class GetTask extends AsyncTask<Void, Void, String> {
         String getUrl;
         GetCallback callback;
         //private LoadingDalog loadingDalog = null; // 这个请自己定义加载中对话框，或者干脆不使用
 
+        @SuppressWarnings("deprecation")
         GetTask(String getUrl, GetCallback callback) {
             this.getUrl = getUrl;
             this.callback = callback;
@@ -34,7 +65,7 @@ public class GetUtil {
 
         @Override
         protected String doInBackground(Void... params) {
-            String result = "";
+            String result;
             try {
                 // 新建一个URL对象
                 URL url = new URL(getUrl);
@@ -85,36 +116,6 @@ public class GetUtil {
             super.onPreExecute();
 
         }
-    }
-
-    /**
-     * 将输入流转换成字符串
-     *
-     * @param is 从网络获取的输入流
-     * @return 字符串
-     */
-    public static String streamToString(InputStream is) {
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int len = 0;
-            while ((len = is.read(buffer)) != -1) {
-                out.write(buffer, 0, len);
-            }
-            out.close();
-            is.close();
-            byte[] byteArray = out.toByteArray();
-            return new String(byteArray);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /*public void translate(Context context, String targetLan, String content, TranslateCallback callback) {
-        translate(context, LAN_AUTO, targetLan, content, callback);
-    }*/
-    public interface GetCallback {
-        public void onGetDone(String result);
     }
 
 }

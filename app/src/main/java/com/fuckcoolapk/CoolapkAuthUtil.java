@@ -1,5 +1,6 @@
 package com.fuckcoolapk;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import org.apache.commons.codec.binary.Base64;
@@ -10,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 public class CoolapkAuthUtil {
     public static String getAS(String UUID) {
@@ -31,10 +33,11 @@ public class CoolapkAuthUtil {
         }
         return result;
     }
+
     public static String dateToStamp(String time) throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = simpleDateFormat.parse(time);
-        long ts = date.getTime();
+        long ts = Objects.requireNonNull(date).getTime();
         return String.valueOf(ts);
     }
 }

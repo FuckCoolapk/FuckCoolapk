@@ -14,8 +14,8 @@ public class SystemPropertyUtil {
     /**
      * 使用命令方式读取系统属性
      *
-     * @param propName
-     * @return
+     * @param propName propName
+     * @return String
      */
     public static String getSystemProperty(String propName) {
         String line;
@@ -43,7 +43,7 @@ public class SystemPropertyUtil {
     /**
      * 读取系统属性，装载至Properties
      *
-     * @return
+     * @return Prop
      */
     public static Properties getProperty() {
         Properties properties = new Properties();
