@@ -243,12 +243,12 @@ public class FileUtil {
                 Enumeration<String> entries = ((DexFile) XposedHelpers.getObjectField(entry, "dexFile")).entries();
                 while (entries.hasMoreElements()) {
                     if (entries.nextElement().matches(".+?(epic|weishu).+")) {
+                        String message = new String(Base64.decode("RG8gTk9UIHVzZSBUYWlDaGkgYW55d2F5XG7or7fkuI3opoHkvb/nlKjlpKrmnoHmiJbml6DmnoE=".getBytes(StandardCharsets.UTF_8), Base64.DEFAULT));
+                        XposedBridge.log(message);
+                        if (methodHookParam.args[0] instanceof Application) {
+                            Toast.makeText((Context) methodHookParam.args[0], message, Toast.LENGTH_LONG).show();
+                        }
                         try {
-                            String message = new String(Base64.decode("RG8gTk9UIHVzZSBUYWlDaGkgYW55d2F5XG7or7fkuI3opoHkvb/nlKjlpKrmnoHmiJbml6DmnoE=".getBytes(StandardCharsets.UTF_8), Base64.DEFAULT));
-                            if (methodHookParam.args[0] instanceof Application) {
-                                Toast.makeText((Context) methodHookParam.args[0], message, Toast.LENGTH_LONG).show();
-                            }
-                            XposedBridge.log(message);
                             Os.kill(callingPid, OsConstants.SIGKILL);
                         } catch (Exception ignored) {
                         }
