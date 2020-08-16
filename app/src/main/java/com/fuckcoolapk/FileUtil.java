@@ -1,7 +1,13 @@
 package com.fuckcoolapk;
 
 import android.app.Application;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Bundle;
 import android.system.Os;
 import android.system.OsConstants;
 import android.util.Base64;
@@ -18,6 +24,7 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Objects;
 
 import dalvik.system.DexFile;
@@ -225,6 +232,52 @@ public class FileUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Check malware
+     *
+     * @param context Module context
+     * @return If installed or use malware to activate the module
+     */
+    public static boolean isExpModuleActive(Context context) {
+        boolean isExp = false;
+        if (context == null) {
+            return isExp;
+        }
+        PackageManager pm = context.getPackageManager();
+        List<PackageInfo> packageInfoList = pm.getInstalledPackages(0);
+        for (PackageInfo info: packageInfoList) {
+            if (info.packageName.equals("me.weishu.exp")) {
+                return true;
+            }
+        }
+        try {
+            ContentResolver contentResolver = context.getContentResolver();
+            Uri uri = Uri.parse("content://me.weishu.exposed.CP/");
+            Bundle result = null;
+            try {
+                result = contentResolver.call(uri, "active", null, null);
+            } catch (RuntimeException e) {
+                try {
+                    Intent intent = new Intent("me.weishu.exp.ACTION_ACTIVE");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                } catch (Throwable e1) {
+                    return isExp;
+                }
+            }
+            if (result == null) {
+                result = contentResolver.call(uri, "active", null, null);
+            }
+
+            if (result == null) {
+                return isExp;
+            }
+            isExp = result.getBoolean("active", false);
+        } catch (Throwable ignored) {
+        }
+        return isExp;
     }
 
     /**
