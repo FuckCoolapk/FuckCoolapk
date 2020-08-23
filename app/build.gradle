@@ -10,7 +10,7 @@ android {
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 22
         versionCode = date.format("yyyyMMdd").toInteger()
-        versionName '0.0.5'
+        versionName '0.0.6'
     }
     buildTypes {
         release {

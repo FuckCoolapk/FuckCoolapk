@@ -68,23 +68,6 @@ public class MainActivity extends Activity {
         goToAppTabByDefaultSwitch = findViewById(R.id.goToAppTabByDefaultSwitch);
         //
         @SuppressWarnings("deprecation") @SuppressLint({"CommitPrefEdits", "WorldReadableFiles"}) SharedPreferences.Editor editor = getSharedPreferences("fuckcoolapk", MODE_WORLD_READABLE).edit();
-        removeStartupAdsSwitch.setChecked(Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/removeStartupAds.txt")));
-        checkFeedStatusSwitch.setChecked(Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/checkFeedStatus.txt")));
-        if (BuildConfig.BUILD_TYPE.equals("debug")){
-            adminModeSwitch.setVisibility(View.VISIBLE);
-        }else {
-            adminModeSwitch.setVisibility(View.GONE);
-        }
-        BuildConfig.BUILD_TYPE=="debug"?adminModeSwitch.setVisibility(View.VISIBLE):adminModeSwitch.setVisibility(View.GONE);
-        adminModeSwitch.setChecked(Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/adminMode.txt")));
-        goToAppTabByDefaultSwitch.setChecked(Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/goToAppTabByDefault.txt")));
-        if (SystemPropertyUtil.getSystemProperty("ro.product.cpu.abi").contains("x86")) {
-            FileUtil.copyAssets(MainActivity.this, "x86", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/jniLibs");
-        } else {
-            FileUtil.copyAssets(MainActivity.this, "armeabi", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/jniLibs");
-        }
-        //Toast.makeText(this,readStringFromFile(Environment.getExternalStorageDirectory().toString()+"/Android/data/"+getApplication().getPackageName()+"/files/removeStartupAds.txt"),Toast.LENGTH_SHORT).show();
-        //
         if (isExpModuleActive(getApplicationContext())) {
             removeStartupAdsSwitch.setEnabled(false);
             checkFeedStatusSwitch.setEnabled(false);
@@ -95,6 +78,22 @@ public class MainActivity extends Activity {
             writeStringToFile("false", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "adminMode.txt");
             writeStringToFile("false", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "goToAppTabByDefault.txt");
         }
+        removeStartupAdsSwitch.setChecked(Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/removeStartupAds.txt")));
+        checkFeedStatusSwitch.setChecked(Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/checkFeedStatus.txt")));
+        if (BuildConfig.BUILD_TYPE.equals("debug")){
+            adminModeSwitch.setVisibility(View.VISIBLE);
+        }else {
+            adminModeSwitch.setVisibility(View.GONE);
+        }
+        adminModeSwitch.setChecked(Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/adminMode.txt")));
+        goToAppTabByDefaultSwitch.setChecked(Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/goToAppTabByDefault.txt")));
+        if (SystemPropertyUtil.getSystemProperty("ro.product.cpu.abi").contains("x86")) {
+            FileUtil.copyAssets(MainActivity.this, "x86", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/jniLibs");
+        } else {
+            FileUtil.copyAssets(MainActivity.this, "armeabi", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/jniLibs");
+        }
+        //Toast.makeText(this,readStringFromFile(Environment.getExternalStorageDirectory().toString()+"/Android/data/"+getApplication().getPackageName()+"/files/removeStartupAds.txt"),Toast.LENGTH_SHORT).show();
+        //
         removeStartupAdsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 writeStringToFile("true", Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/", "removeStartupAds.txt");
