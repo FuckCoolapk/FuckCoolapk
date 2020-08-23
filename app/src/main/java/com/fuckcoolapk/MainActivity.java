@@ -58,8 +58,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        //setMiuiTheme(MainActivity.this,0,mode);
         setContentView(R.layout.activity_main);
         //
         removeStartupAdsSwitch = findViewById(R.id.removeStartupAdsSwitch);
