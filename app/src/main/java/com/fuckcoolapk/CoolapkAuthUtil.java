@@ -27,7 +27,7 @@ public class CoolapkAuthUtil {
             String a = "token://com.coolapk.market/c67ef5943784d09750dcfbb31020f0ab?" + MD5Time + "$" + UUID + "&com.coolapk.market";
             String MD5a = DigestUtils.md5Hex(Base64.encodeBase64(a.getBytes(StandardCharsets.UTF_8)));
             result = MD5a + UUID + hexTime;
-            Log.i("233", result);
+            Log.i("getAS", result);
         } catch (Exception e) {
             e.printStackTrace();
         }
