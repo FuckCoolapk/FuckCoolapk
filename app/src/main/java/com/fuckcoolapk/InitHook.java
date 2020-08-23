@@ -175,12 +175,12 @@ public class InitHook implements IXposedHookLoadPackage {
                                                     try {
                                                         JSONObject jsonObject = new JSONObject(response.body().string());
                                                         String message = jsonObject.optString("message");
-                                                        if (message.equals("该动态存在安全风险，暂时无法访问") | message.equals("你无法查看该内容") | message.equals("你查看的内容已被屏蔽")) {
+                                                        if (message.equals("该动态存在安全风险，暂时无法访问") | message.equals("你无法查看该内容") | message.equals("你查看的内容已被屏蔽")|message.equals("你查看的内容不存在或已被删除")) {
                                                             int foldedCount = ownSharedPreferences.getInt("foldedCount", 0);
                                                             ownSharedPreferencesEditor.putInt("foldedCount", foldedCount + 1);
                                                             ownSharedPreferencesEditor.apply();
                                                             Looper.prepare();
-                                                            Toast.makeText(activity, "这是你的动态第 %s 次被折叠\n和我们一起，发现被折叠的乐趣".replace("%s", String.valueOf(foldedCount + 1)), Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(activity, ("这是你的动态第 %s 次被折叠\n在酷安，发现被折叠的乐趣\n（动态 ID："+feedID+"）").replace("%s", String.valueOf(foldedCount + 1)), Toast.LENGTH_SHORT).show();
                                                             //XposedHelpers.callStaticMethod(toastClazz,"show$default",activity,"动态已被折叠" ,0, false, 12, null);
                                                             //XposedHelpers.callMethod(toastObject,"show",activity,"动态已被折叠");
                                                         } else {

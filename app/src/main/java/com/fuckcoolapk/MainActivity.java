@@ -70,7 +70,12 @@ public class MainActivity extends Activity {
         @SuppressWarnings("deprecation") @SuppressLint({"CommitPrefEdits", "WorldReadableFiles"}) SharedPreferences.Editor editor = getSharedPreferences("fuckcoolapk", MODE_WORLD_READABLE).edit();
         removeStartupAdsSwitch.setChecked(Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/removeStartupAds.txt")));
         checkFeedStatusSwitch.setChecked(Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/checkFeedStatus.txt")));
-        if (BuildConfig.BUILD_TYPE.equals("debug")) adminModeSwitch.setVisibility(View.VISIBLE);
+        if (BuildConfig.BUILD_TYPE.equals("debug")){
+            adminModeSwitch.setVisibility(View.VISIBLE);
+        }else {
+            adminModeSwitch.setVisibility(View.GONE);
+        }
+        BuildConfig.BUILD_TYPE=="debug"?adminModeSwitch.setVisibility(View.VISIBLE):adminModeSwitch.setVisibility(View.GONE);
         adminModeSwitch.setChecked(Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/adminMode.txt")));
         goToAppTabByDefaultSwitch.setChecked(Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/goToAppTabByDefault.txt")));
         if (SystemPropertyUtil.getSystemProperty("ro.product.cpu.abi").contains("x86")) {
