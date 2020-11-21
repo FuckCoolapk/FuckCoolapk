@@ -1,4 +1,4 @@
-package com.fuckcoolapk;
+package com.fuckcoolapk.utils;
 
 import android.content.Context;
 import android.os.AsyncTask;

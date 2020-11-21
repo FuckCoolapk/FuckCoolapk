@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="removeStartupAds">去除啓動廣告</string>
-    <string name="goToAppTabByDefault">默認轉到應用頁</string>
-    <string name="adminModeWarn">建議關閉，此功能很可能導致你號沒了！</string>
-    <string name="adminMode">開啓管理員模式</string>
-    <string name="checkFeedStatus">檢查動態狀態</string>
-    <string name="checkFeedStatusWarn">被摺疊次數在本地計算，卸載酷安後會重置。</string>
-</resources>

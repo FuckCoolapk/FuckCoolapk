@@ -10,7 +10,7 @@ android {
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 22
         versionCode = date.format("yyyyMMdd").toInteger()
-        versionName '0.0.6'
+        versionName '0.1.0'
     }
     buildTypes {
         release {
@@ -30,5 +30,5 @@ dependencies {
     compileOnly 'de.robv.android.xposed:api:82'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'commons-codec:commons-codec:20041127.091804'
-    implementation 'com.squareup.okhttp3:okhttp:4.8.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
 }

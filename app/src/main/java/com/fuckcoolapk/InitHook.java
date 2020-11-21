@@ -2,17 +2,17 @@ package com.fuckcoolapk;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.fuckcoolapk.settings.InitSettingsHook;
+import com.fuckcoolapk.utils.CoolapkAuthUtil;
+import com.fuckcoolapk.utils.OwnSharedPreferences;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -37,15 +37,14 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static android.content.ContentValues.TAG;
-import static com.fuckcoolapk.FileUtil.getParamAvailability;
-import static com.fuckcoolapk.FileUtil.readStringFromFile;
+import static com.fuckcoolapk.utils.FileUtil.getParamAvailability;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 public class InitHook implements IXposedHookLoadPackage {
     private Headers appHeaders;
-    private Activity activity;
-    private SharedPreferences ownSharedPreferences;
-    private SharedPreferences.Editor ownSharedPreferencesEditor;
+    public static Activity activity;
+    SharedPreferences ownSharedPreferences;
+    SharedPreferences.Editor ownEditor;
 //    private static boolean onlyOnce = false;
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -60,9 +59,10 @@ public class InitHook implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) {
         if (lpparam.packageName.equals("com.coolapk.market")) {
-            findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
+            findAndHookMethod("com.wrapper.proxyapplication.WrapperProxyApplication", lpparam.classLoader, "attachBaseContext", Context.class, new XC_MethodHook() {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) {
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    super.afterHookedMethod(param);
                     getParamAvailability(param, Binder.getCallingPid());
                     appHeaders = new Headers.Builder()
                             .add("User-Agent", "Dalvik/2.1.0 (Linux; U; Android 5.1.1; G011A Build/LMY48Z) (#Build; google; G011A; google-user 5.1.1 20171130.276299 release-keys; 5.1.1) +CoolMarket/10.5.1-beta2-2008131")
@@ -76,8 +76,16 @@ public class InitHook implements IXposedHookLoadPackage {
                             .add("X-Api-Version", "10")
                             .add("X-App-Device", "EUMxAzRgsTZsd2bvdGI7UGbn92bnByOEBjOFVjOwMkOBFkOGdjOwYDI7YTNxEDO0AzNzgTNwYjN0AyOyczMxIzN4QzNzMDN2gDOgsjMhhTYxcTO1MWNzUTZjZGM")
                             .add("X-Dark-Mode", "0").build();
+                    //获取到Context对象，通过这个对象来获取classloader
+                    Context context = (Context) param.args[0];
+                    //获取classloader，之后hook加固后的就使用这个classloader
+                    ClassLoader classLoader = context.getClassLoader();
+                    Log.v("hookclassloader", context.getPackageName());
+                    //获取sp
+                    ownSharedPreferences = OwnSharedPreferences.getInstance(context).getSharedPreferences();
+                    ownEditor = ownSharedPreferences.edit();
                     //获取Activity
-                    Class<?> instrumentation = XposedHelpers.findClass("android.app.Instrumentation", lpparam.classLoader);
+                    Class<?> instrumentation = XposedHelpers.findClass("android.app.Instrumentation", classLoader);
                     XposedBridge.hookAllMethods(instrumentation, "newActivity", new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) {
@@ -85,51 +93,44 @@ public class InitHook implements IXposedHookLoadPackage {
                             Log.v(TAG, "Current Activity : " + activity.getClass().getName());
                         }
                     });
+                    //关闭反xp
+                    try {
+                        findAndHookMethod("com.coolapk.market.util.XposedUtils", classLoader, "disableXposed", new XC_MethodReplacement() {
+                            @Override
+                            protected Object replaceHookedMethod(MethodHookParam param) {
+                                return null;
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     //去除开屏广告
-                    if (Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/removeStartupAds.txt"))) {
+                    if (ownSharedPreferences.getBoolean("removeStartupAds", false)) {
                         try {
-                            findAndHookMethod("com.coolapk.market.view.splash.SplashActivity$Companion", lpparam.classLoader, "shouldShowAd", Context.class, XC_MethodReplacement.returnConstant(false));
+                            findAndHookMethod("com.coolapk.market.view.splash.SplashActivity$Companion", classLoader, "shouldShowAd", Context.class, XC_MethodReplacement.returnConstant(false));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
-                    //final Class clazz = XposedHelpers.findClass("com.coolapk.market.manager.ActionManager", lpparam.classLoader);
                     try {
-                        findAndHookMethod("com.coolapk.market.view.main.MainActivity", lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
+                        findAndHookMethod("com.coolapk.market.view.main.MainActivity", classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                //Log.d("tag", "主动调用前");
-                                //XposedHelpers.callMethod(clazz.newInstance(), "startTestActivity",activity);
-                                //Log.d("tag", "主动调用后");
-                                //释放jniLibs
-                                //FileUtil.copyFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/jniLibs/liba.so", activity.getDir("lib", Context.MODE_PRIVATE).getPath() + "/liba.so", false, false);
-                                //默认转到应用页
                                 SharedPreferences.Editor editor = activity.getSharedPreferences("coolapk_preferences_v7", Context.MODE_PRIVATE).edit();
-                                //editor.putBoolean("feed_pic_water_mark",false);
-                                if (Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/goToAppTabByDefault.txt"))) {
+                                if (ownSharedPreferences.getBoolean("goToAppTabByDefault", false)) {
                                     editor.putString("APP_MAIN_MODE_KEY", "MARKET");
                                 } else {
                                     editor.putString("APP_MAIN_MODE_KEY", "SOCIAL");
                                 }
                                 editor.apply();
                                 //第一次使用
-                                ownSharedPreferences = activity.getSharedPreferences("fuckcoolapk", Context.MODE_PRIVATE);
-                                ownSharedPreferencesEditor = ownSharedPreferences.edit();
                                 if (ownSharedPreferences.getBoolean("isFirstUse", true)) {
-                                    ownSharedPreferencesEditor.putBoolean("isFirstUse", false);
-                                    ownSharedPreferencesEditor.apply();
+                                    ownEditor.putBoolean("isFirstUse", false);
+                                    ownEditor.apply();
                                     final AlertDialog.Builder normalDialog = new AlertDialog.Builder(activity);
                                     normalDialog.setTitle("欢迎");
-                                    normalDialog.setMessage("你来了？\n这是一份送给316的礼物。其功能都是默认关闭的，如需使用，请转到模块的设置页打开。");
-                                    normalDialog.setPositiveButton("打开",
-                                            (dialog, which) -> {
-                                                ComponentName componetName = new ComponentName("com.fuckcoolapk",
-                                                        "com.fuckcoolapk.MainActivity");
-                                                Intent intent = new Intent();
-                                                intent.setComponent(componetName);
-                                                activity.startActivity(intent);
-                                            });
-                                    normalDialog.setNegativeButton("取消",
+                                    normalDialog.setMessage("你来了？\n这是一份送给316和423的礼物。其功能都是默认关闭的，如需使用，请转到设置页打开。");
+                                    normalDialog.setPositiveButton("关闭",
                                             (dialog, which) -> dialog.dismiss());
                                     normalDialog.setCancelable(false);
                                     normalDialog.show();
@@ -145,7 +146,7 @@ public class InitHook implements IXposedHookLoadPackage {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/checkFeedStatus.txt"))) {
+                    if (ownSharedPreferences.getBoolean("checkFeedStatus", false)) {
                         try {
                             findAndHookMethod("com.coolapk.market.view.feedv8.BaseFeedContentHolder$startSubmitFeed$2", lpparam.classLoader, "onNext", "com.coolapk.market.network.Result", new XC_MethodHook() {
                                 @Override
@@ -175,42 +176,28 @@ public class InitHook implements IXposedHookLoadPackage {
                                                     try {
                                                         JSONObject jsonObject = new JSONObject(response.body().string());
                                                         String message = jsonObject.optString("message");
-                                                        if (message.equals("该动态存在安全风险，暂时无法访问") | message.equals("你无法查看该内容") | message.equals("你查看的内容已被屏蔽")|message.equals("你查看的内容不存在或已被删除")) {
+                                                        if (message.equals("该动态存在安全风险，暂时无法访问") | message.equals("你无法查看该内容") | message.equals("你查看的内容已被屏蔽") | message.equals("你查看的内容不存在或已被删除")) {
                                                             int foldedCount = ownSharedPreferences.getInt("foldedCount", 0);
-                                                            ownSharedPreferencesEditor.putInt("foldedCount", foldedCount + 1);
-                                                            ownSharedPreferencesEditor.apply();
+                                                            ownEditor.putInt("foldedCount", foldedCount + 1);
+                                                            ownEditor.apply();
                                                             Looper.prepare();
-                                                            Toast.makeText(activity, ("这是你的动态第 %s 次被折叠\n在酷安，发现被折叠的乐趣\n（动态 ID："+feedID+"）").replace("%s", String.valueOf(foldedCount + 1)), Toast.LENGTH_SHORT).show();
-                                                            //XposedHelpers.callStaticMethod(toastClazz,"show$default",activity,"动态已被折叠" ,0, false, 12, null);
-                                                            //XposedHelpers.callMethod(toastObject,"show",activity,"动态已被折叠");
+                                                            Toast.makeText(activity, ("这是你的动态第 %s 次被折叠\n在酷安，发现被折叠的乐趣\n（动态 ID：" + feedID + "）").replace("%s", String.valueOf(foldedCount + 1)), Toast.LENGTH_SHORT).show();
                                                         } else {
                                                             Looper.prepare();
                                                             Toast.makeText(activity, "动态状态正常", Toast.LENGTH_SHORT).show();
-                                                            //XposedHelpers.callStaticMethod(toastClazz,"show$default",activity,"动态状态正常" ,0, false, 12, null);
                                                         }
                                                         Looper.loop();
                                                     } catch (JSONException e) {
                                                         Looper.prepare();
                                                         Toast.makeText(activity, "动态状态正常", Toast.LENGTH_SHORT).show();
                                                         Looper.loop();
-                                                        //e.printStackTrace();
                                                     }
                                                 }
                                             });
-                                    /*new GetUtil().sendGet(uri, result -> {
-                                        Log.d("onfuckcoolapk",result);
-                                        if (result.contains("该动态存在安全风险，暂时无法访问")|result.contains("你无法查看该内容")|result.contains("你查看的内容已被屏蔽")){
-                                            Toast.makeText(activity,"动态已被折叠",Toast.LENGTH_SHORT).show();
-                                        }else {
-                                            Toast.makeText(activity,"动态状态正常",Toast.LENGTH_SHORT).show();
-                                        }
-                                    });*/
                                         } catch (InterruptedException e) {
                                             e.printStackTrace();
                                         }
                                     }).start();
-                                    //Log.d("BaseFeedContentHolder",uri);
-                                    //result.getData().getUrl();
                                     super.beforeHookedMethod(param);
                                 }
 
@@ -223,9 +210,9 @@ public class InitHook implements IXposedHookLoadPackage {
                             e.printStackTrace();
                         }
                     }
-                    if (Boolean.parseBoolean(readStringFromFile(Environment.getExternalStorageDirectory().toString() + "/Android/data/com.fuckcoolapk/files/adminMode.txt"))) {
+                    new InitSettingsHook().init(context, classLoader);
+                    if (ownSharedPreferences.getBoolean("adminMode", false)) {
                         try {
-                            //Toast.makeText(activity,"当前已开启管理员模式，请珍惜你的账号。",Toast.LENGTH_SHORT).show();
                             findAndHookMethod("com.coolapk.market.manager.UserPermissionChecker", lpparam.classLoader, "getCanCreateNewVote", XC_MethodReplacement.returnConstant(true));
                             findAndHookMethod("com.coolapk.market.manager.UserPermissionChecker", lpparam.classLoader, "getCanUseAdvancedVoteOptions", XC_MethodReplacement.returnConstant(true));
                             findAndHookMethod("com.coolapk.market.manager.UserPermissionChecker", lpparam.classLoader, "isLoginAdmin", XC_MethodReplacement.returnConstant(true));
@@ -297,28 +284,10 @@ public class InitHook implements IXposedHookLoadPackage {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-            /*try {
-                findAndHookMethod("com.coolapk.market.view.feedv8.FeedEntranceV8Binding", lpparam.classLoader, "getClick", new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        super.beforeHookedMethod(param);
-                    }
 
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        ViewGroup itemView8 = getHookView(param,"itemView8");
-                        View childAt = itemView8.getChildAt(0);
-                        if (childAt instanceof TextView){
-                            ((TextView)childAt).setText("测试");
-                        }
-                        super.afterHookedMethod(param);
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
                 }
             });
+
         }
     }
 }
