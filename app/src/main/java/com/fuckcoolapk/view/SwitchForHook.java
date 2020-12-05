@@ -1,10 +1,12 @@
 package com.fuckcoolapk.view;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.Switch;
 
+import com.fuckcoolapk.AppConfig;
 import com.fuckcoolapk.utils.AppUtil;
 
 public class SwitchForHook extends Switch {
@@ -25,7 +27,13 @@ public class SwitchForHook extends Switch {
     }
 
     {
-        this.setTextColor(Color.BLACK);
+        if (AppUtil.isNightMode(super.getContext())){
+            this.setTextColor(Color.WHITE);
+        }else {
+            this.setTextColor(Color.BLACK);
+        }
+        //this.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#ff109d58")));
+        //this.setForegroundTintList(ColorStateList.valueOf(Color.parseColor("#ff109d58")));
         this.setPadding(AppUtil.dp2px(super.getContext(),10), AppUtil.dp2px(super.getContext(),10),AppUtil.dp2px(super.getContext(),10),AppUtil.dp2px(super.getContext(),10));
     }
 }

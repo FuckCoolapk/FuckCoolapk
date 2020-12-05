@@ -3,8 +3,10 @@ package com.fuckcoolapk.settings;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -133,8 +135,13 @@ public class InitSettingsHook {
                 (dialog, which) -> {
                     System.exit(0);
                 });
+        normalDialog.setNegativeButton("GitHub",
+                (dialog, which) -> {
+                    InitHook.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lz233/FuckCoolapk")));
+                });
         AlertDialog alertDialog = normalDialog.show();
         alertDialog.setOnDismissListener(dialogInterface -> isOpen = false);
         alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#ff109d58"));
+        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#ff109d58"));
     }
 }

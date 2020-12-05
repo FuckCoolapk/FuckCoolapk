@@ -1,14 +1,16 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.0"
+    buildToolsVersion "30.0.2"
     defaultConfig {
         Date date = new Date()
         applicationId "com.fuckcoolapk"
         minSdkVersion 21
         //noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 22
+        targetSdkVersion 30
         versionCode = date.format("yyyyMMdd").toInteger()
         versionName '0.1.0'
     }
@@ -22,6 +24,14 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        exclude 'META-INF/**'
+        exclude 'kotlin/**'
+        exclude 'okhttp3/**'
+        exclude 'org/**'
+        exclude '**.properties'
+        exclude '**.bin'
     }
 }
 
