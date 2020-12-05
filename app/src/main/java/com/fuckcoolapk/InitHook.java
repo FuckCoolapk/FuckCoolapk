@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.fuckcoolapk.settings.InitSettingsHook;
+import com.fuckcoolapk.submitfeed.InitSubmitFeedHook;
 import com.fuckcoolapk.utils.CoolapkAuthUtil;
 import com.fuckcoolapk.utils.OwnSharedPreferences;
 
@@ -80,7 +81,7 @@ public class InitHook implements IXposedHookLoadPackage {
                     Context context = (Context) param.args[0];
                     //获取classloader，之后hook加固后的就使用这个classloader
                     ClassLoader classLoader = context.getClassLoader();
-                    Log.v("hookclassloader", context.getPackageName());
+                    Log.v(AppConfig.TAG, context.getPackageName());
                     //获取sp
                     ownSharedPreferences = OwnSharedPreferences.getInstance(context).getSharedPreferences();
                     ownEditor = ownSharedPreferences.edit();
@@ -116,13 +117,18 @@ public class InitHook implements IXposedHookLoadPackage {
                         findAndHookMethod("com.coolapk.market.view.main.MainActivity", classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                SharedPreferences.Editor editor = activity.getSharedPreferences("coolapk_preferences_v7", Context.MODE_PRIVATE).edit();
+                                super.beforeHookedMethod(param);
+                            }
+
+                            @Override
+                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                /*SharedPreferences.Editor editor = activity.getSharedPreferences("coolapk_preferences_v7", Context.MODE_PRIVATE).edit();
                                 if (ownSharedPreferences.getBoolean("goToAppTabByDefault", false)) {
                                     editor.putString("APP_MAIN_MODE_KEY", "MARKET");
                                 } else {
                                     editor.putString("APP_MAIN_MODE_KEY", "SOCIAL");
                                 }
-                                editor.apply();
+                                editor.apply();*/
                                 //第一次使用
                                 if (ownSharedPreferences.getBoolean("isFirstUse", true)) {
                                     ownEditor.putBoolean("isFirstUse", false);
@@ -135,11 +141,6 @@ public class InitHook implements IXposedHookLoadPackage {
                                     normalDialog.setCancelable(false);
                                     normalDialog.show();
                                 }
-                                super.beforeHookedMethod(param);
-                            }
-
-                            @Override
-                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                                 super.afterHookedMethod(param);
                             }
                         });
@@ -211,6 +212,7 @@ public class InitHook implements IXposedHookLoadPackage {
                         }
                     }
                     new InitSettingsHook().init(context, classLoader);
+                    new InitSubmitFeedHook().init(classLoader);
                     if (ownSharedPreferences.getBoolean("adminMode", false)) {
                         try {
                             findAndHookMethod("com.coolapk.market.manager.UserPermissionChecker", lpparam.classLoader, "getCanCreateNewVote", XC_MethodReplacement.returnConstant(true));

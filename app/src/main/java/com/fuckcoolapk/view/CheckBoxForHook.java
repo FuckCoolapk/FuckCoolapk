@@ -1,5 +1,6 @@
 package com.fuckcoolapk.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.CheckBox;
@@ -23,6 +24,7 @@ public class CheckBoxForHook extends CheckBox {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
     {
-
+        //this.setButtonDrawable(null);
+       // this.setCompoundDrawables(null,null,this.getContext().getDrawable(android.R.attr.listChoiceIndicatorMultiple),null);
     }
 }

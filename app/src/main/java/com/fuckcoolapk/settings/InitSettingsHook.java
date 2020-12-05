@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -59,6 +60,10 @@ public class InitSettingsHook {
                         if (intValue != null & intValue == 233 & !isOpen) {
                             showSettingsDialog();
                             isOpen = true;
+                            /*Object settingActivity = XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.coolapk.market.view.base.SimpleActivity",classLoader),"builder",InitHook.activity);
+                            settingActivity=XposedHelpers.callMethod(settingActivity,"fragmentClass",XposedHelpers.findClass("com.coolapk.market.view.settings.VXSettingsFragment",classLoader));
+                            settingActivity=XposedHelpers.callMethod(settingActivity,"title","Fuck CoolApk");
+                            XposedHelpers.callMethod(settingActivity,"start");*/
                         }
                         super.beforeHookedMethod(param);
                     }
@@ -69,39 +74,19 @@ public class InitSettingsHook {
     }
 
     private void showSettingsDialog() {
+        SharedPreferences coolapkSharedPreferences = InitHook.activity.getSharedPreferences("coolapk_preferences_v7",Context.MODE_PRIVATE);
+        SharedPreferences.Editor coolapkEditor = coolapkSharedPreferences.edit();
         SharedPreferences sharedPreferences = OwnSharedPreferences.getInstance(context).getSharedPreferences();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         final AlertDialog.Builder normalDialog = new AlertDialog.Builder(InitHook.activity);
         normalDialog.setTitle("Fuck CoolApk");
         ScrollView scrollView = new ScrollView(InitHook.activity);
+        scrollView.setOverScrollMode(2);
         LinearLayout linearLayout = new LinearLayout(InitHook.activity);
         scrollView.addView(linearLayout);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(AppUtil.dp2px(context, 20), AppUtil.dp2px(context, 10), AppUtil.dp2px(context, 20), AppUtil.dp2px(context, 5));
-        SwitchForHook removeStartupAdsSwitch = new SwitchForHook(InitHook.activity);
-        removeStartupAdsSwitch.setText("去除启动广告");
-        removeStartupAdsSwitch.setChecked(sharedPreferences.getBoolean("removeStartupAds", false));
-        removeStartupAdsSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) {
-                editor.putBoolean("removeStartupAds", true);
-            } else {
-                editor.putBoolean("removeStartupAds", false);
-            }
-            editor.apply();
-        });
-        linearLayout.addView(removeStartupAdsSwitch);
-        SwitchForHook goToAppTabByDefaultSwitch = new SwitchForHook(InitHook.activity);
-        goToAppTabByDefaultSwitch.setText("默认转到应用页");
-        goToAppTabByDefaultSwitch.setChecked(sharedPreferences.getBoolean("goToAppTabByDefault", false));
-        goToAppTabByDefaultSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) {
-                editor.putBoolean("goToAppTabByDefault", true);
-            } else {
-                editor.putBoolean("goToAppTabByDefault", false);
-            }
-            editor.apply();
-        });
-        linearLayout.addView(goToAppTabByDefaultSwitch);
+        linearLayout.addView(new SwitchForHook(InitHook.activity,"去除启动广告","removeStartupAds",false));
         SwitchForHook checkFeedStatusSwitch = new SwitchForHook(InitHook.activity);
         checkFeedStatusSwitch.setText("检查动态状态");
         checkFeedStatusSwitch.setChecked(sharedPreferences.getBoolean("checkFeedStatus", false));
@@ -116,20 +101,20 @@ public class InitSettingsHook {
         });
         linearLayout.addView(checkFeedStatusSwitch);
         if (BuildConfig.BUILD_TYPE.equals("debug")) {
-            SwitchForHook adminModeSwitch = new SwitchForHook(InitHook.activity);
-            adminModeSwitch.setText("管理员模式");
-            adminModeSwitch.setChecked(sharedPreferences.getBoolean("adminMode", false));
-            adminModeSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-                if (b) {
-                    editor.putBoolean("adminMode", true);
-                    Toast.makeText(InitHook.activity,"建议关闭，此功能很可能导致你号没了！",Toast.LENGTH_SHORT).show();
-                } else {
-                    editor.putBoolean("adminMode", false);
-                }
-                editor.apply();
-            });
-            linearLayout.addView(adminModeSwitch);
+            linearLayout.addView(new SwitchForHook(InitHook.activity,"管理员模式","adminMode",false));
         }
+        SwitchForHook statisticToastSwitch = new SwitchForHook(InitHook.activity);
+        statisticToastSwitch.setText("临时输出统计内容");
+        statisticToastSwitch.setChecked(coolapkSharedPreferences.getBoolean("statistic_toast",false));
+        statisticToastSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b){
+                coolapkEditor.putBoolean("statistic_toast",true);
+            }else {
+                coolapkEditor.putBoolean("statistic_toast",false);
+            }
+            coolapkEditor.apply();
+        });
+        linearLayout.addView(statisticToastSwitch);
         normalDialog.setView(scrollView);
         normalDialog.setPositiveButton("重启应用",
                 (dialog, which) -> {
@@ -139,9 +124,13 @@ public class InitSettingsHook {
                 (dialog, which) -> {
                     InitHook.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lz233/FuckCoolapk")));
                 });
+        normalDialog.setNeutralButton("FAQ", (dialogInterface, i) -> {
+            InitHook.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lz233/FuckCoolapk/wiki/FAQ")));
+        });
         AlertDialog alertDialog = normalDialog.show();
         alertDialog.setOnDismissListener(dialogInterface -> isOpen = false);
         alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#ff109d58"));
         alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#ff109d58"));
+        alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(Color.parseColor("#ff109d58"));
     }
 }
