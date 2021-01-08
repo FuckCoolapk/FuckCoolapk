@@ -89,6 +89,7 @@ public class InitSettingsHook {
         if (BuildConfig.BUILD_TYPE.equals("debug")) {
             linearLayout.addView(new SwitchForHook(InitHook.activity, "管理员模式", OwnSharedPreferences.getInstance().getSharedPreferences(), "adminMode", false));
         }
+        linearLayout.addView(new SwitchForHook(InitHook.activity, "对图文开启 Markdown（没实装）", OwnSharedPreferences.getInstance().getSharedPreferences(), "enableMarkdown", false));
         linearLayout.addView(new SwitchForHook(InitHook.activity, "关闭 Umeng", OwnSharedPreferences.getInstance().getSharedPreferences(), "disableUmeng", false));
         linearLayout.addView(new SwitchForHook(InitHook.activity, "关闭腾讯 Bugly", OwnSharedPreferences.getInstance().getSharedPreferences(), "disableBugly", false));
         linearLayout.addView(new TextViewForHook(InitHook.activity, "调试", TextViewForHook.title2Size, TextViewForHook.coolapkColor));
