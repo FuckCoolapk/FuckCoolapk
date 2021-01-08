@@ -32,7 +32,7 @@ public class InitSubmitFeedHook {
                 lp.rightMargin=AppUtil.dp2px(InitHook.activity,10f);
                 checkBoxForHook.setLayoutParams(lp);
                 //checkBoxForHook.setPadding(AppUtil.dp2px(InitHook.activity,10.f),0,0,0);
-                checkBoxForHook.setText("临时关闭水印");
+                checkBoxForHook.setText("临时关闭水印（没实装）");
                 checkBoxForHook.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

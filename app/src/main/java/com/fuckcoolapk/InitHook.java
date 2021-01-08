@@ -5,15 +5,21 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.fuckcoolapk.disableBugly.InitDisableBugly;
+import com.fuckcoolapk.disableUmeng.InitDisableUmeng;
+import com.fuckcoolapk.hideApp.InitHideApp;
 import com.fuckcoolapk.settings.InitSettingsHook;
 import com.fuckcoolapk.submitfeed.InitSubmitFeedHook;
 import com.fuckcoolapk.utils.CoolapkAuthUtil;
+import com.fuckcoolapk.utils.CoolapkSharedPreferences;
 import com.fuckcoolapk.utils.OwnSharedPreferences;
+import com.sfysoft.android.xposed.shelling.XposedEntry;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -44,6 +50,7 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 public class InitHook implements IXposedHookLoadPackage {
     private Headers appHeaders;
     public static Activity activity;
+    public static Context context;
     SharedPreferences ownSharedPreferences;
     SharedPreferences.Editor ownEditor;
 //    private static boolean onlyOnce = false;
@@ -78,13 +85,10 @@ public class InitHook implements IXposedHookLoadPackage {
                             .add("X-App-Device", "EUMxAzRgsTZsd2bvdGI7UGbn92bnByOEBjOFVjOwMkOBFkOGdjOwYDI7YTNxEDO0AzNzgTNwYjN0AyOyczMxIzN4QzNzMDN2gDOgsjMhhTYxcTO1MWNzUTZjZGM")
                             .add("X-Dark-Mode", "0").build();
                     //获取到Context对象，通过这个对象来获取classloader
-                    Context context = (Context) param.args[0];
+                    context = (Context) param.args[0];
                     //获取classloader，之后hook加固后的就使用这个classloader
                     ClassLoader classLoader = context.getClassLoader();
                     Log.v(AppConfig.TAG, context.getPackageName());
-                    //获取sp
-                    ownSharedPreferences = OwnSharedPreferences.getInstance(context).getSharedPreferences();
-                    ownEditor = ownSharedPreferences.edit();
                     //获取Activity
                     Class<?> instrumentation = XposedHelpers.findClass("android.app.Instrumentation", classLoader);
                     XposedBridge.hookAllMethods(instrumentation, "newActivity", new XC_MethodHook() {
@@ -94,6 +98,16 @@ public class InitHook implements IXposedHookLoadPackage {
                             Log.v(TAG, "Current Activity : " + activity.getClass().getName());
                         }
                     });
+                    //获取sp
+                    ownSharedPreferences = OwnSharedPreferences.getInstance().getSharedPreferences();
+                    ownEditor = ownSharedPreferences.edit();
+                    //脱壳
+                    if (ownSharedPreferences.getBoolean("shouldShelling",false)){
+                        if (Build.VERSION.SDK_INT<=Build.VERSION_CODES.P){
+                            new XposedEntry().runShelling(lpparam);
+                        }
+                        ownEditor.putBoolean("shouldShelling",false).apply();
+                    }
                     //关闭反xp
                     try {
                         findAndHookMethod("com.coolapk.market.util.XposedUtils", classLoader, "disableXposed", new XC_MethodReplacement() {
@@ -122,13 +136,6 @@ public class InitHook implements IXposedHookLoadPackage {
 
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                /*SharedPreferences.Editor editor = activity.getSharedPreferences("coolapk_preferences_v7", Context.MODE_PRIVATE).edit();
-                                if (ownSharedPreferences.getBoolean("goToAppTabByDefault", false)) {
-                                    editor.putString("APP_MAIN_MODE_KEY", "MARKET");
-                                } else {
-                                    editor.putString("APP_MAIN_MODE_KEY", "SOCIAL");
-                                }
-                                editor.apply();*/
                                 //第一次使用
                                 if (ownSharedPreferences.getBoolean("isFirstUse", true)) {
                                     ownEditor.putBoolean("isFirstUse", false);
@@ -140,6 +147,10 @@ public class InitHook implements IXposedHookLoadPackage {
                                             (dialog, which) -> dialog.dismiss());
                                     normalDialog.setCancelable(false);
                                     normalDialog.show();
+                                }
+                                //临时输出日志
+                                if (ownSharedPreferences.getBoolean("statisticToast",false)){
+                                    CoolapkSharedPreferences.getInstance().getEditor().putBoolean("statistic_toast",true).apply();
                                 }
                                 super.afterHookedMethod(param);
                             }
@@ -211,8 +222,12 @@ public class InitHook implements IXposedHookLoadPackage {
                             e.printStackTrace();
                         }
                     }
+                    new InitHideApp().init(classLoader);
                     new InitSettingsHook().init(context, classLoader);
                     new InitSubmitFeedHook().init(classLoader);
+                    new InitDisableUmeng().init(classLoader);
+                    new InitDisableBugly().init(classLoader);
+                    //管理员模式
                     if (ownSharedPreferences.getBoolean("adminMode", false)) {
                         try {
                             findAndHookMethod("com.coolapk.market.manager.UserPermissionChecker", lpparam.classLoader, "getCanCreateNewVote", XC_MethodReplacement.returnConstant(true));

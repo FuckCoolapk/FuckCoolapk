@@ -4,20 +4,19 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.fuckcoolapk.BuildConfig;
 import com.fuckcoolapk.InitHook;
 import com.fuckcoolapk.utils.AppUtil;
 import com.fuckcoolapk.utils.OwnSharedPreferences;
+import com.fuckcoolapk.view.ClickableTextViewForHook;
 import com.fuckcoolapk.view.SwitchForHook;
+import com.fuckcoolapk.view.TextViewForHook;
 
 import java.util.List;
 
@@ -74,63 +73,40 @@ public class InitSettingsHook {
     }
 
     private void showSettingsDialog() {
-        SharedPreferences coolapkSharedPreferences = InitHook.activity.getSharedPreferences("coolapk_preferences_v7",Context.MODE_PRIVATE);
-        SharedPreferences.Editor coolapkEditor = coolapkSharedPreferences.edit();
-        SharedPreferences sharedPreferences = OwnSharedPreferences.getInstance(context).getSharedPreferences();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         final AlertDialog.Builder normalDialog = new AlertDialog.Builder(InitHook.activity);
-        normalDialog.setTitle("Fuck CoolApk");
+        //normalDialog.setTitle("Fuck CoolApk");
         ScrollView scrollView = new ScrollView(InitHook.activity);
         scrollView.setOverScrollMode(2);
         LinearLayout linearLayout = new LinearLayout(InitHook.activity);
         scrollView.addView(linearLayout);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(AppUtil.dp2px(context, 20), AppUtil.dp2px(context, 10), AppUtil.dp2px(context, 20), AppUtil.dp2px(context, 5));
-        linearLayout.addView(new SwitchForHook(InitHook.activity,"去除启动广告","removeStartupAds",false));
-        SwitchForHook checkFeedStatusSwitch = new SwitchForHook(InitHook.activity);
-        checkFeedStatusSwitch.setText("检查动态状态");
-        checkFeedStatusSwitch.setChecked(sharedPreferences.getBoolean("checkFeedStatus", false));
-        checkFeedStatusSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) {
-                editor.putBoolean("checkFeedStatus", true);
-                Toast.makeText(InitHook.activity,"被折叠次数在本地计算，卸载酷安后会重置。",Toast.LENGTH_SHORT).show();
-            } else {
-                editor.putBoolean("checkFeedStatus", false);
-            }
-            editor.apply();
-        });
-        linearLayout.addView(checkFeedStatusSwitch);
+        linearLayout.addView(new TextViewForHook(InitHook.activity, "Fuck CoolApk", TextViewForHook.titleSize, null));
+        linearLayout.addView(new TextViewForHook(InitHook.activity,BuildConfig.VERSION_NAME+" "+BuildConfig.VERSION_CODE+" "+BuildConfig.BUILD_TYPE,null,null));
+        linearLayout.addView(new TextViewForHook(InitHook.activity, "行为", TextViewForHook.title2Size, TextViewForHook.coolapkColor));
+        linearLayout.addView(new SwitchForHook(InitHook.activity, "去除启动广告", OwnSharedPreferences.getInstance().getSharedPreferences(), "removeStartupAds", false));
+        linearLayout.addView(new SwitchForHook(InitHook.activity, "检查动态状态", OwnSharedPreferences.getInstance().getSharedPreferences(), "checkFeedStatus", false, "被折叠次数在本地计算，卸载酷安后会重置。"));
         if (BuildConfig.BUILD_TYPE.equals("debug")) {
-            linearLayout.addView(new SwitchForHook(InitHook.activity,"管理员模式","adminMode",false));
+            linearLayout.addView(new SwitchForHook(InitHook.activity, "管理员模式", OwnSharedPreferences.getInstance().getSharedPreferences(), "adminMode", false));
         }
-        SwitchForHook statisticToastSwitch = new SwitchForHook(InitHook.activity);
-        statisticToastSwitch.setText("临时输出统计内容");
-        statisticToastSwitch.setChecked(coolapkSharedPreferences.getBoolean("statistic_toast",false));
-        statisticToastSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b){
-                coolapkEditor.putBoolean("statistic_toast",true);
-            }else {
-                coolapkEditor.putBoolean("statistic_toast",false);
-            }
-            coolapkEditor.apply();
-        });
-        linearLayout.addView(statisticToastSwitch);
+        linearLayout.addView(new SwitchForHook(InitHook.activity, "关闭 Umeng", OwnSharedPreferences.getInstance().getSharedPreferences(), "disableUmeng", false));
+        linearLayout.addView(new SwitchForHook(InitHook.activity, "关闭腾讯 Bugly", OwnSharedPreferences.getInstance().getSharedPreferences(), "disableBugly", false));
+        linearLayout.addView(new TextViewForHook(InitHook.activity, "调试", TextViewForHook.title2Size, TextViewForHook.coolapkColor));
+        linearLayout.addView(new SwitchForHook(InitHook.activity, "临时输出统计内容", OwnSharedPreferences.getInstance().getSharedPreferences(), "statisticToast", false));
+        linearLayout.addView(new SwitchForHook(InitHook.activity, "对酷安进行脱壳 (Android 9 -)", OwnSharedPreferences.getInstance().getSharedPreferences(), "shouldShelling", false,"仅适用于 Android P 以前的版本。\n重启应用后开始脱壳，文件存放在 /data/data/com.coolapk.market/fuck_coolapk_shell。"));
+        linearLayout.addView(new TextViewForHook(InitHook.activity, "信息", TextViewForHook.title2Size, TextViewForHook.coolapkColor));
+        linearLayout.addView(new ClickableTextViewForHook(InitHook.activity, "Xposed Module Repository", null, null, view -> InitHook.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://repo.xposed.info/module/com.fuckcoolapk")))));
+        linearLayout.addView(new ClickableTextViewForHook(InitHook.activity, "GitHub", null, null, view -> InitHook.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lz233/FuckCoolapk")))));
+        linearLayout.addView(new ClickableTextViewForHook(InitHook.activity, "FAQ", null, null, view -> InitHook.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lz233/FuckCoolapk/wiki/FAQ")))));
         normalDialog.setView(scrollView);
         normalDialog.setPositiveButton("重启应用",
                 (dialog, which) -> {
                     System.exit(0);
                 });
-        normalDialog.setNegativeButton("GitHub",
-                (dialog, which) -> {
-                    InitHook.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lz233/FuckCoolapk")));
-                });
-        normalDialog.setNeutralButton("FAQ", (dialogInterface, i) -> {
-            InitHook.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lz233/FuckCoolapk/wiki/FAQ")));
-        });
         AlertDialog alertDialog = normalDialog.show();
         alertDialog.setOnDismissListener(dialogInterface -> isOpen = false);
-        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#ff109d58"));
-        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#ff109d58"));
-        alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(Color.parseColor("#ff109d58"));
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor(TextViewForHook.coolapkColor));
+        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor(TextViewForHook.coolapkColor));
+        alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(Color.parseColor(TextViewForHook.coolapkColor));
     }
 }

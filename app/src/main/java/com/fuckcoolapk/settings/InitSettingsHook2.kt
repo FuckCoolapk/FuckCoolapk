@@ -15,7 +15,7 @@ class InitSettingsHook2 {
                 val fuckcoolapkHolderItem = XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.coolapk.market.model.HolderItem", classLoader), "newBuilder").callMethod("entityType","holder_item")
                 val list= XposedHelpers.callMethod(param?.thisObject, "getDataList") as java.util.List<*>
                 //fuckcoolapkHolderItem.callMethod("entityType", "holder_item")
-                list.add(fuckcoolapkHolderItem?.callMethod("string","Fuck CoolApk").callMethod("intValue",233).callMethod("build") as Nothing?)
+                list.add(fuckcoolapkHolderItem?.callMethod("string","Fuck CoolApk")?.callMethod("intValue",233)?.callMethod("build") as Nothing?)
                 super.beforeHookedMethod(param)
             }
         })
