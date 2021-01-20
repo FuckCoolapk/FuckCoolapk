@@ -122,7 +122,21 @@ public class InitHook implements IXposedHookLoadPackage {
                     //去除开屏广告
                     if (ownSharedPreferences.getBoolean("removeStartupAds", false)) {
                         try {
-                            findAndHookMethod("com.coolapk.market.view.splash.SplashActivity$Companion", classLoader, "shouldShowAd", Context.class, XC_MethodReplacement.returnConstant(false));
+                            PackageManager pm = context.getPackageManager();
+                            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+                            long versioncode;
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+                                versioncode = pi.getLongVersionCode();
+                            }else{
+                                versioncode = Long.parseLong(String.valueOf(pi.versionCode));
+                            }
+                            String classname;
+                            if (versioncode >= 2101202L){
+                                classname = "com.coolapk.market.view.splash.FullScreenAdUtils";
+                            }else{
+                                classname = "com.coolapk.market.view.splash.SplashActivity$Companion";
+                            }
+                            findAndHookMethod(classname, classLoader, "shouldShowAd", Context.class, XC_MethodReplacement.returnConstant(false));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
