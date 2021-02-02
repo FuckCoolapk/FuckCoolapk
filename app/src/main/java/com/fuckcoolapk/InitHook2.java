@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.fuckcoolapk.module.HideModule;
 import com.fuckcoolapk.module.HookSettings;
 import com.fuckcoolapk.submitfeed.InitSubmitFeedHook;
+import com.fuckcoolapk.utils.CoolapkAuthUtilKt;
 import com.sfysoft.android.xposed.shelling.XposedShelling;
 
 import org.jetbrains.annotations.NotNull;
@@ -73,7 +74,7 @@ public class InitHook2 implements IXposedHookLoadPackage {
                             .add("X-Sdk-Int", "22")
                             .add("X-Sdk-Locale", "zh-CN")
                             .add("X-App-Id", "com.coolapk.market")
-                            .add("X-App-Token", CoolapkAuthUtil.getAS(UUID.randomUUID().toString()))
+                            .add("X-App-Token", CoolapkAuthUtilKt.getAS(UUID.randomUUID().toString()))
                             .add("X-App-Version", "10.5.1-beta2")
                             .add("X-App-Code", "2008131")
                             .add("X-Api-Version", "10")
