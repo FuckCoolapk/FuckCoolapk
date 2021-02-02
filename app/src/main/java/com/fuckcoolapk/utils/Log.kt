@@ -1,6 +1,4 @@
-@file:Suppress("unused")
-
-package com.fuckcoolapk.utils.ktx
+package com.fuckcoolapk.utils
 
 import android.os.Handler
 import android.os.Looper
@@ -9,8 +7,6 @@ import de.robv.android.xposed.XposedBridge
 import android.util.Log as ALog
 
 object Log {
-
-    private val handler by lazy { Handler(Looper.getMainLooper()) }
 
     @JvmStatic
     private fun doLog(f: (String, String) -> Int, obj: Any?, toXposed: Boolean = false) {

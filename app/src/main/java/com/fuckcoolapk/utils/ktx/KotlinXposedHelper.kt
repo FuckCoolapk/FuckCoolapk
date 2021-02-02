@@ -3,6 +3,7 @@
 package com.fuckcoolapk.utils.ktx
 
 import android.content.res.XResources
+import com.fuckcoolapk.utils.Log
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodHook.MethodHookParam
 import de.robv.android.xposed.XC_MethodReplacement

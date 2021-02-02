@@ -1,0 +1,114 @@
+package com.fuckcoolapk.module;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+
+import com.fuckcoolapk.BuildConfig;
+import com.fuckcoolapk.utils.AppUtil;
+import com.fuckcoolapk.utils.CoolapkContext;
+import com.fuckcoolapk.utils.Log;
+import com.fuckcoolapk.utils.OwnSP;
+import com.fuckcoolapk.view.ClickableTextViewForHook;
+import com.fuckcoolapk.view.SwitchForHook;
+import com.fuckcoolapk.view.TextViewForHook;
+
+import java.util.List;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
+
+public class HookSettings {
+    private Boolean isOpen = false;
+
+    public void init() {
+        try {
+            XposedHelpers.findAndHookMethod("com.coolapk.market.view.settings.VXSettingsFragment", CoolapkContext.classLoader, "initData", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    Object fuckcoolapkHolderItem = XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.coolapk.market.model.HolderItem", CoolapkContext.classLoader), "newBuilder");
+                    fuckcoolapkHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "entityType", "holder_item");
+                    Object lineHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "intValue", 14);
+                    lineHolderItem = XposedHelpers.callMethod(lineHolderItem, "build");
+                    fuckcoolapkHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "string", "Fuck Coolapk");
+                    fuckcoolapkHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "intValue", 233);
+                    fuckcoolapkHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "build");
+                    List list = (List) XposedHelpers.callMethod(param.thisObject, "getDataList");
+                    list.add(fuckcoolapkHolderItem);
+                    list.add(lineHolderItem);
+                    //Log.v(AppConfig.TAG,fuckcoolapkHolderItem.toString());
+                    super.beforeHookedMethod(param);
+                }
+            });
+            XposedHelpers.findAndHookConstructor("com.coolapk.market.view.settings.VXSettingsFragment$onCreateViewHolder$1", CoolapkContext.classLoader, "com.coolapk.market.view.settings.VXSettingsFragment", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    List list = (List) XposedHelpers.callMethod(param.args[0], "getDataList");
+                    XposedHelpers.findAndHookMethod("com.coolapk.market.view.settings.VXSettingsFragment$onCreateViewHolder$1", CoolapkContext.classLoader, "onItemClick", "androidx.recyclerview.widget.RecyclerView$ViewHolder", View.class, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            Object obj = list.get((Integer) XposedHelpers.callMethod(param.args[0], "getAdapterPosition"));
+                            Integer intValue = (Integer) XposedHelpers.callMethod(obj, "getIntValue");
+                            //Log.v(AppConfig.TAG, intValue.toString());
+                            if (intValue != null & intValue == 233 & !isOpen) {
+                                showSettingsDialog();
+                                isOpen = true;
+                            /*Object settingActivity = XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.coolapk.market.view.base.SimpleActivity",classLoader),"builder",InitHook.activity);
+                            settingActivity=XposedHelpers.callMethod(settingActivity,"fragmentClass",XposedHelpers.findClass("com.coolapk.market.view.settings.VXSettingsFragment",classLoader));
+                            settingActivity=XposedHelpers.callMethod(settingActivity,"title","Fuck CoolApk");
+                            XposedHelpers.callMethod(settingActivity,"start");*/
+                            }
+                            super.beforeHookedMethod(param);
+                        }
+                    });
+                    super.afterHookedMethod(param);
+                }
+            });
+        } catch (Throwable e) {
+            Log.e(e);
+        }
+    }
+
+    private void showSettingsDialog() {
+        final AlertDialog.Builder normalDialog = new AlertDialog.Builder(CoolapkContext.activity);
+        //normalDialog.setTitle("Fuck CoolApk");
+        ScrollView scrollView = new ScrollView(CoolapkContext.activity);
+        scrollView.setOverScrollMode(2);
+        LinearLayout linearLayout = new LinearLayout(CoolapkContext.activity);
+        scrollView.addView(linearLayout);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setPadding(AppUtil.dp2px(CoolapkContext.context, 20), AppUtil.dp2px(CoolapkContext.context, 10), AppUtil.dp2px(CoolapkContext.context, 20), AppUtil.dp2px(CoolapkContext.context, 5));
+        linearLayout.addView(new TextViewForHook(CoolapkContext.activity, "Fuck Coolapk", TextViewForHook.titleSize, null));
+        linearLayout.addView(new TextViewForHook(CoolapkContext.activity, BuildConfig.VERSION_NAME + " " + BuildConfig.VERSION_CODE + " " + BuildConfig.BUILD_TYPE, null, null));
+        linearLayout.addView(new TextViewForHook(CoolapkContext.activity, "行为", TextViewForHook.title2Size, TextViewForHook.coolapkColor));
+        linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "去除启动广告", OwnSP.INSTANCE.getOwnSP(), "removeStartupAds", false));
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
+            linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "管理员模式", OwnSP.INSTANCE.getOwnSP(), "adminMode", false));
+        }
+        linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "对图文开启 Markdown（没实装）", OwnSP.INSTANCE.getOwnSP(), "enableMarkdown", false));
+        linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "关闭 Umeng", OwnSP.INSTANCE.getOwnSP(), "disableUmeng", false));
+        linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "关闭腾讯 Bugly", OwnSP.INSTANCE.getOwnSP(), "disableBugly", false));
+        linearLayout.addView(new TextViewForHook(CoolapkContext.activity, "调试", TextViewForHook.title2Size, TextViewForHook.coolapkColor));
+        //linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "临时输出统计内容", OwnSP.INSTANCE.getOwnSP(), "statisticToast", false));
+        linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "对 酷安 进行脱壳", OwnSP.INSTANCE.getOwnSP(), "shouldShelling", false, "仅适用于 Android P 以前的版本。\n重启应用后开始脱壳，文件存放在 /data/data/com.coolapk.market/fuck_coolapk_shell。"));
+        linearLayout.addView(new TextViewForHook(CoolapkContext.activity, "信息", TextViewForHook.title2Size, TextViewForHook.coolapkColor));
+        linearLayout.addView(new ClickableTextViewForHook(CoolapkContext.activity, "Xposed Module Repository", null, null, view -> CoolapkContext.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://repo.xposed.info/module/com.fuckcoolapk")))));
+        linearLayout.addView(new ClickableTextViewForHook(CoolapkContext.activity, "GitHub", null, null, view -> CoolapkContext.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lz233/FuckCoolapk")))));
+        linearLayout.addView(new ClickableTextViewForHook(CoolapkContext.activity, "FAQ", null, null, view -> CoolapkContext.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lz233/FuckCoolapk/wiki/FAQ")))));
+        normalDialog.setView(scrollView);
+        normalDialog.setPositiveButton("重启应用",
+                (dialog, which) -> {
+                    System.exit(0);
+                });
+        AlertDialog alertDialog = normalDialog.show();
+        alertDialog.setOnDismissListener(dialogInterface -> isOpen = false);
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor(TextViewForHook.coolapkColor));
+        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor(TextViewForHook.coolapkColor));
+        alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(Color.parseColor(TextViewForHook.coolapkColor));
+    }
+}

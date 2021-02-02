@@ -11,15 +11,10 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.fuckcoolapk.disableBugly.InitDisableBugly;
-import com.fuckcoolapk.disableUmeng.InitDisableUmeng;
-import com.fuckcoolapk.hideApp.InitHideApp;
-import com.fuckcoolapk.settings.InitSettingsHook;
+import com.fuckcoolapk.module.HideModule;
+import com.fuckcoolapk.module.HookSettings;
 import com.fuckcoolapk.submitfeed.InitSubmitFeedHook;
-import com.fuckcoolapk.utils.CoolapkAuthUtil;
-import com.fuckcoolapk.utils.CoolapkSharedPreferences;
-import com.fuckcoolapk.utils.OwnSharedPreferences;
-import com.sfysoft.android.xposed.shelling.XposedEntry;
+import com.sfysoft.android.xposed.shelling.XposedShelling;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -47,7 +42,7 @@ import static android.content.ContentValues.TAG;
 import static com.fuckcoolapk.utils.FileUtil.getParamAvailability;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
-public class InitHook implements IXposedHookLoadPackage {
+public class InitHook2 implements IXposedHookLoadPackage {
     private Headers appHeaders;
     public static Activity activity;
     public static Context context;
@@ -99,12 +94,12 @@ public class InitHook implements IXposedHookLoadPackage {
                         }
                     });
                     //获取sp
-                    ownSharedPreferences = OwnSharedPreferences.getInstance().getSharedPreferences();
+                    //ownSharedPreferences = OwnSharedPreferences.getInstance().getSharedPreferences();
                     ownEditor = ownSharedPreferences.edit();
                     //脱壳
                     if (ownSharedPreferences.getBoolean("shouldShelling",false)){
                         if (Build.VERSION.SDK_INT<=Build.VERSION_CODES.P){
-                            new XposedEntry().runShelling(lpparam);
+                            new XposedShelling().runShelling(lpparam);
                         }
                         ownEditor.putBoolean("shouldShelling",false).apply();
                     }
@@ -122,7 +117,7 @@ public class InitHook implements IXposedHookLoadPackage {
                     //去除开屏广告
                     if (ownSharedPreferences.getBoolean("removeStartupAds", false)) {
                         try {
-                            findAndHookMethod("com.coolapk.market.view.splash.SplashActivity$Companion", classLoader, "shouldShowAd", Context.class, XC_MethodReplacement.returnConstant(false));
+                            findAndHookMethod("com.coolapk.market.view.splash.FullScreenAdUtils", classLoader, "shouldShowAd", Context.class, XC_MethodReplacement.returnConstant(false));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -150,7 +145,7 @@ public class InitHook implements IXposedHookLoadPackage {
                                 }
                                 //临时输出日志
                                 if (ownSharedPreferences.getBoolean("statisticToast",false)){
-                                    CoolapkSharedPreferences.getInstance().getEditor().putBoolean("statistic_toast",true).apply();
+                                    //CoolapkSharedPreferences.getInstance().getEditor().putBoolean("statistic_toast",true).apply();
                                 }
                                 super.afterHookedMethod(param);
                             }
@@ -222,11 +217,11 @@ public class InitHook implements IXposedHookLoadPackage {
                             e.printStackTrace();
                         }
                     }
-                    new InitHideApp().init(classLoader);
-                    new InitSettingsHook().init(context, classLoader);
+                    new HideModule().init();
+                    new HookSettings().init();
                     new InitSubmitFeedHook().init(classLoader);
-                    new InitDisableUmeng().init(classLoader);
-                    new InitDisableBugly().init(classLoader);
+                    //new DisableUmeng().init(classLoader);
+                    //new DisableBugly().init(classLoader);
                     //管理员模式
                     if (ownSharedPreferences.getBoolean("adminMode", false)) {
                         try {

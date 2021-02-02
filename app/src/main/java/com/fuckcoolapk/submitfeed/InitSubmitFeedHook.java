@@ -1,21 +1,14 @@
 package com.fuckcoolapk.submitfeed;
 
 import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.fuckcoolapk.InitHook;
+import com.fuckcoolapk.InitHook2;
 import com.fuckcoolapk.utils.AppUtil;
 import com.fuckcoolapk.view.CheckBoxForHook;
-import com.fuckcoolapk.view.SwitchForHook;
-
-import java.lang.reflect.Field;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 
 public class InitSubmitFeedHook {
@@ -24,12 +17,12 @@ public class InitSubmitFeedHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 LinearLayout view = (LinearLayout) XposedHelpers.callMethod(param.thisObject,"getView");
-                LinearLayout linearLayout = new LinearLayout(InitHook.activity);
+                LinearLayout linearLayout = new LinearLayout(InitHook2.activity);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
-                CheckBoxForHook checkBoxForHook = new CheckBoxForHook(InitHook.activity);
+                CheckBoxForHook checkBoxForHook = new CheckBoxForHook(InitHook2.activity);
                 LinearLayout.LayoutParams lp =new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 lp.gravity= Gravity.RIGHT;
-                lp.rightMargin=AppUtil.dp2px(InitHook.activity,10f);
+                lp.rightMargin=AppUtil.dp2px(InitHook2.activity,10f);
                 checkBoxForHook.setLayoutParams(lp);
                 //checkBoxForHook.setPadding(AppUtil.dp2px(InitHook.activity,10.f),0,0,0);
                 checkBoxForHook.setText("临时关闭水印（没实装）");

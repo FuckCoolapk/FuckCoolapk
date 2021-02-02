@@ -7,12 +7,13 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.fuckcoolapk.InitHook;
+import com.fuckcoolapk.InitHook2;
 import com.fuckcoolapk.utils.AppUtil;
+import com.fuckcoolapk.utils.CoolapkContext;
 
 public class TextViewForHook extends TextView {
-    public static float titleSize = AppUtil.dp2px(InitHook.context,10f);
-    public static float title2Size = AppUtil.dp2px(InitHook.context,8f);
+    public static float titleSize = AppUtil.dp2px(CoolapkContext.context,10f);
+    public static float title2Size = AppUtil.dp2px(CoolapkContext.context,8f);
     public static String coolapkColor = "#ff109d58";
 
     public TextViewForHook(Context context) {

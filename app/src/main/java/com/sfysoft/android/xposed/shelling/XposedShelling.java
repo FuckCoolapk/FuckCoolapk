@@ -6,6 +6,9 @@
 package com.sfysoft.android.xposed.shelling;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
+
+import com.fuckcoolapk.utils.OwnSP;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,7 +30,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  *
  * @author Oak Chen
  */
-public class XposedEntry {
+public class XposedShelling {
     private static final boolean DEBUG = false;
     /**
      * 加固应用的初始类，对应AndroidManifests.xml里的<application android:name的值
@@ -57,42 +60,45 @@ public class XposedEntry {
         XposedBridge.log(throwable);
     }
 
-    public void runShelling(XC_LoadPackage.LoadPackageParam lpparam) {
-        String packageName = lpparam.packageName;
-        log("Load package: " + packageName);
+    public static void runShelling(XC_LoadPackage.LoadPackageParam lpparam) {
+        if (OwnSP.INSTANCE.getOwnSP().getBoolean("shouldShelling",false)&(Build.VERSION.SDK_INT<=Build.VERSION_CODES.P)){
+            OwnSP.INSTANCE.set("shouldShelling",false);
+            String packageName = lpparam.packageName;
+            log("Load package: " + packageName);
 
-        boolean found = false;
-        for (String targetPackage : targetPackages) {
-            if (packageName.equals(targetPackage)) {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            return;
-        }
-
-        for (String application : PACKED_APP_ENTRIES) {
-            Class cls = XposedHelpers.findClassIfExists(application, lpparam.classLoader);
-            if (cls != null) {
-                log("Found " + application);
-                ClassLoaderHook hook;
-                try {
-                    hook = new ClassLoaderHook(getSavingPath(packageName));
-                    XposedHelpers.findAndHookMethod("java.lang.ClassLoader", lpparam.classLoader,
-                            "loadClass", String.class, boolean.class, hook);
-                } catch (NoSuchMethodException | ClassNotFoundException e) {
-                    log(e);
+            boolean found = false;
+            for (String targetPackage : targetPackages) {
+                if (packageName.equals(targetPackage)) {
+                    found = true;
+                    break;
                 }
-                break;
+            }
+
+            if (!found) {
+                return;
+            }
+
+            for (String application : PACKED_APP_ENTRIES) {
+                Class cls = XposedHelpers.findClassIfExists(application, lpparam.classLoader);
+                if (cls != null) {
+                    log("Found " + application);
+                    ClassLoaderHook hook;
+                    try {
+                        hook = new ClassLoaderHook(getSavingPath(packageName));
+                        XposedHelpers.findAndHookMethod("java.lang.ClassLoader", lpparam.classLoader,
+                                "loadClass", String.class, boolean.class, hook);
+                    } catch (NoSuchMethodException | ClassNotFoundException e) {
+                        log(e);
+                    }
+                    break;
+                }
             }
         }
     }
 
     @SuppressWarnings("SameParameterValue")
     @SuppressLint("SdCardPath")
-    private String getSavingPath(String packageName) {
+    private static String getSavingPath(String packageName) {
         return "/data/data/" + packageName + "/fuck_coolapk_shell";
     }
 
