@@ -18,7 +18,9 @@
 - [x] 关闭 Bugly 和 Umeng
 - [x] 对 酷安 进行脱壳
 - [x] 隐藏模块
+
 ~~- [x] 临时显示统计 Toast~~
+
 ~~- [x] 动态状态检查~~
 
 # Third party license
