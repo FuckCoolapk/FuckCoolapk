@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import com.fuckcoolapk.AppConfigKt;
 import com.fuckcoolapk.BuildConfig;
 import com.fuckcoolapk.utils.AppUtil;
 import com.fuckcoolapk.utils.CoolapkContext;
@@ -84,15 +85,16 @@ public class HookSettings {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(AppUtil.dp2px(CoolapkContext.context, 20), AppUtil.dp2px(CoolapkContext.context, 10), AppUtil.dp2px(CoolapkContext.context, 20), AppUtil.dp2px(CoolapkContext.context, 5));
         linearLayout.addView(new TextViewForHook(CoolapkContext.activity, "Fuck Coolapk", TextViewForHook.titleSize, null));
-        linearLayout.addView(new TextViewForHook(CoolapkContext.activity, BuildConfig.VERSION_NAME + " " + BuildConfig.VERSION_CODE + " " + BuildConfig.BUILD_TYPE, null, null));
-        linearLayout.addView(new TextViewForHook(CoolapkContext.activity, "行为", TextViewForHook.title2Size, TextViewForHook.coolapkColor));
+        linearLayout.addView(new TextViewForHook(CoolapkContext.activity, BuildConfig.VERSION_NAME + " " + BuildConfig.VERSION_CODE + " " + BuildConfig.BUILD_TYPE+"\nTarget Version: "+ AppConfigKt.MODULE_TARGET_VERSION, null, null));
+        linearLayout.addView(new TextViewForHook(CoolapkContext.activity, "功能", TextViewForHook.title2Size, TextViewForHook.coolapkColor));
         linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "去除启动广告", OwnSP.INSTANCE.getOwnSP(), "removeStartupAds", false));
+        linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "去除动态审核水印", OwnSP.INSTANCE.getOwnSP(), "removeAuditWatermark", false));
         if (BuildConfig.BUILD_TYPE.equals("debug")) {
             linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "管理员模式", OwnSP.INSTANCE.getOwnSP(), "adminMode", false));
         }
         linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "对图文开启 Markdown（没实装）", OwnSP.INSTANCE.getOwnSP(), "enableMarkdown", false));
         linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "关闭 Umeng", OwnSP.INSTANCE.getOwnSP(), "disableUmeng", false));
-        linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "关闭腾讯 Bugly", OwnSP.INSTANCE.getOwnSP(), "disableBugly", false));
+        linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "关闭 Bugly", OwnSP.INSTANCE.getOwnSP(), "disableBugly", false));
         linearLayout.addView(new TextViewForHook(CoolapkContext.activity, "调试", TextViewForHook.title2Size, TextViewForHook.coolapkColor));
         //linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "临时输出统计内容", OwnSP.INSTANCE.getOwnSP(), "statisticToast", false));
         linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "对 酷安 进行脱壳", OwnSP.INSTANCE.getOwnSP(), "shouldShelling", false, "仅适用于 Android P 以前的版本。\n重启应用后开始脱壳，文件存放在 /data/data/com.coolapk.market/fuck_coolapk_shell。"));

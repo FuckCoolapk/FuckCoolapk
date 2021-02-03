@@ -21,7 +21,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 class InitHook : IXposedHookLoadPackage {
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam?) {
-        if (lpparam?.packageName == PACKAGENAME) {
+        if (lpparam?.packageName == PACKAGE_NAME) {
             XposedHelpers.findClass("com.wrapper.proxyapplication.WrapperProxyApplication", lpparam.classLoader)
                     .hookAfterMethod("attachBaseContext", Context::class.java) {
                         //检查太极
@@ -68,6 +68,8 @@ class InitHook : IXposedHookLoadPackage {
                         DisableBugly().init()
                         //开启管理员模式
                         EnableAdminMode().init()
+                        //去除动态审核的水印
+                        RemoveAuditWatermark().init()
                     }
         }
     }
