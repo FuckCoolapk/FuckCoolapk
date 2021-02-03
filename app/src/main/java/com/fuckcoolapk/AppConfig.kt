@@ -1,5 +1,4 @@
-package com.fuckcoolapk;
+package com.fuckcoolapk
 
-public class AppConfig {
-    public static String TAG = "FUCKCOOLAPK";
-}
+const val PACKAGENAME = "com.coolapk.market"
+const val TAG = "FUCKCOOLAPK"

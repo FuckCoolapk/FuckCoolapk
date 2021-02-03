@@ -21,7 +21,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 class InitHook : IXposedHookLoadPackage {
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam?) {
-        if (lpparam?.packageName == "com.coolapk.market") {
+        if (lpparam?.packageName == PACKAGENAME) {
             XposedHelpers.findClass("com.wrapper.proxyapplication.WrapperProxyApplication", lpparam.classLoader)
                     .hookAfterMethod("attachBaseContext", Context::class.java) {
                         //检查太极

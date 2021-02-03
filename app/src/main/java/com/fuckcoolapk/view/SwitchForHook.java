@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.fuckcoolapk.utils.AppUtil;
-import com.fuckcoolapk.utils.OwnSharedPreferences;
 
 public class SwitchForHook extends Switch {
     public SwitchForHook(Context context) {

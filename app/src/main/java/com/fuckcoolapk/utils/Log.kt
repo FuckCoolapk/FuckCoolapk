@@ -2,7 +2,7 @@ package com.fuckcoolapk.utils
 
 import android.os.Handler
 import android.os.Looper
-import com.fuckcoolapk.AppConfig
+import com.fuckcoolapk.TAG
 import de.robv.android.xposed.XposedBridge
 import android.util.Log as ALog
 
@@ -23,9 +23,9 @@ object Log {
                 }
             }
         } else {
-            f(AppConfig.TAG, str)
+            f(TAG, str)
             if (toXposed)
-                XposedBridge.log("${AppConfig.TAG} : $str")
+                XposedBridge.log("$TAG : $str")
         }
     }
 
