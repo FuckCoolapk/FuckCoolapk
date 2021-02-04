@@ -1,15 +1,11 @@
-package com.fuckcoolapk.utils;
+package com.fuckcoolapk.utils
 
-import android.content.Context;
-import android.content.res.Configuration;
+import android.content.Context
+import android.content.res.Configuration
+import java.lang.reflect.Field
 
-public class AppUtil {
-    public static int dp2px(Context context, float dipValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dipValue * scale + 0.5f);
-    }
-    public static boolean isNightMode(Context context) {
-        int mode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        return mode == Configuration.UI_MODE_NIGHT_YES;
-    }
-}
+
+fun dp2px(context: Context, dpValue: Float): Int = (dpValue * context.resources.displayMetrics.density + 0.5f).toInt()
+fun sp2px(context: Context, spValue: Float): Int = (spValue * context.resources.displayMetrics.scaledDensity + 0.5f).toInt()
+fun isNightMode(context: Context): Boolean = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+

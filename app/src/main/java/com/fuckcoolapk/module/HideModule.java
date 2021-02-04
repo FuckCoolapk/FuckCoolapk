@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 
 import com.fuckcoolapk.BuildConfig;
 import com.fuckcoolapk.utils.CoolapkContext;
-import com.fuckcoolapk.utils.Log;
+import com.fuckcoolapk.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -41,7 +41,7 @@ public class HideModule {
                 }
             });
         }catch (Throwable e){
-            Log.e(e);
+            LogUtil.e(e);
         }
     }
 }

@@ -7,12 +7,12 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.fuckcoolapk.utils.AppUtil;
+import com.fuckcoolapk.utils.AppUtilKt;
 import com.fuckcoolapk.utils.CoolapkContext;
 
 public class TextViewForHook extends TextView {
-    public static float titleSize = AppUtil.dp2px(CoolapkContext.context, 10f);
-    public static float title2Size = AppUtil.dp2px(CoolapkContext.context, 8f);
+    public static float titleSize = AppUtilKt.dp2px(CoolapkContext.context, 10f);
+    public static float title2Size = AppUtilKt.dp2px(CoolapkContext.context, 8f);
     public static String coolapkColor = "#ff109d58";
 
     public TextViewForHook(Context context) {
@@ -44,7 +44,7 @@ public class TextViewForHook extends TextView {
         if (color != null) {
             this.setTextColor(Color.parseColor(color));
         } else {
-            if (AppUtil.isNightMode(super.getContext())) {
+            if (AppUtilKt.isNightMode(super.getContext())) {
                 this.setTextColor(Color.WHITE);
             } else {
                 this.setTextColor(Color.BLACK);
@@ -53,6 +53,6 @@ public class TextViewForHook extends TextView {
     }
 
     {
-        this.setPadding(AppUtil.dp2px(super.getContext(), 10), AppUtil.dp2px(super.getContext(), 10), AppUtil.dp2px(super.getContext(), 10), AppUtil.dp2px(super.getContext(), 10));
+        this.setPadding(AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10));
     }
 }

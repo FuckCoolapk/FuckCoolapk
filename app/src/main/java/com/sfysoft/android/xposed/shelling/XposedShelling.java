@@ -7,7 +7,9 @@ package com.sfysoft.android.xposed.shelling;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
+import android.util.Log;
 
+import com.fuckcoolapk.utils.LogUtil;
 import com.fuckcoolapk.utils.OwnSP;
 
 import java.io.File;
@@ -52,45 +54,36 @@ public class XposedShelling {
     private static final String[] targetPackages =
             new String[]{"com.coolapk.market"};
 
-    private static void log(String text) {
-        XposedBridge.log(text);
-    }
-
-    private static void log(Throwable throwable) {
-        XposedBridge.log(throwable);
-    }
-
     public static void runShelling(XC_LoadPackage.LoadPackageParam lpparam) {
-        if (OwnSP.INSTANCE.getOwnSP().getBoolean("shouldShelling",false)&(Build.VERSION.SDK_INT<=Build.VERSION_CODES.P)){
-            OwnSP.INSTANCE.set("shouldShelling",false);
-            String packageName = lpparam.packageName;
-            log("Load package: " + packageName);
-
-            boolean found = false;
-            for (String targetPackage : targetPackages) {
-                if (packageName.equals(targetPackage)) {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                return;
-            }
-
-            for (String application : PACKED_APP_ENTRIES) {
-                Class cls = XposedHelpers.findClassIfExists(application, lpparam.classLoader);
-                if (cls != null) {
-                    log("Found " + application);
-                    ClassLoaderHook hook;
-                    try {
-                        hook = new ClassLoaderHook(getSavingPath(packageName));
-                        XposedHelpers.findAndHookMethod("java.lang.ClassLoader", lpparam.classLoader,
-                                "loadClass", String.class, boolean.class, hook);
-                    } catch (NoSuchMethodException | ClassNotFoundException e) {
-                        log(e);
+        if (OwnSP.INSTANCE.getOwnSP().getBoolean("shouldShelling", false)) {
+            OwnSP.INSTANCE.set("shouldShelling", false);
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                String packageName = lpparam.packageName;
+                LogUtil.d("Load package: " + packageName);
+                boolean found = false;
+                for (String targetPackage : targetPackages) {
+                    if (packageName.equals(targetPackage)) {
+                        found = true;
+                        break;
                     }
-                    break;
+                }
+                if (!found) {
+                    return;
+                }
+                for (String application : PACKED_APP_ENTRIES) {
+                    Class cls = XposedHelpers.findClassIfExists(application, lpparam.classLoader);
+                    if (cls != null) {
+                        LogUtil.d("Found " + application);
+                        ClassLoaderHook hook;
+                        try {
+                            hook = new ClassLoaderHook(getSavingPath(packageName));
+                            XposedHelpers.findAndHookMethod("java.lang.ClassLoader", lpparam.classLoader,
+                                    "loadClass", String.class, boolean.class, hook);
+                        } catch (NoSuchMethodException | ClassNotFoundException e) {
+                            LogUtil.e(e);
+                        }
+                        break;
+                    }
                 }
             }
         }
@@ -149,12 +142,12 @@ public class XposedShelling {
             try {
                 dex = getDex.invoke(cls);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                log(e);
+                LogUtil.e(e);
                 return;
             }
 
             if (DEBUG) {
-                log("loadClass " + cls.getName() + ", Dex: " + dex);
+                LogUtil.d("loadClass " + cls.getName() + ", Dex: " + dex);
             }
 
             dexOutputTask.write(dex);
@@ -191,7 +184,7 @@ public class XposedShelling {
                 File savingDir = new File(savingDirectory);
                 if (!savingDir.exists()) {
                     if (!savingDir.mkdirs()) {
-                        log("Can not mkdir " + savingDirectory);
+                        LogUtil.d("Can not mkdir " + savingDirectory);
                         return;
                     }
                 }
@@ -220,15 +213,15 @@ public class XposedShelling {
                     i++;
                     @SuppressLint("DefaultLocale") String targetFile =
                             savingDirectory + String.format("/%05d-%02d.dex", threadId, i);
-                    log("Thread: " + threadId + ", File: " + targetFile);
+                    LogUtil.d("Thread: " + threadId + ", File: " + targetFile);
                     try (FileOutputStream fileOutputStream = new FileOutputStream(targetFile)) {
                         fileOutputStream.write(bytes);
                     } catch (IOException e) {
-                        log(e);
+                        LogUtil.e(e);
                     }
                 }
 
-                log("Thread: " + threadId + ", Dex size: " + dexSet.size());
+                LogUtil.d("Thread: " + threadId + ", Dex size: " + dexSet.size());
                 synchronized (byteSet) {
                     byteSet.clear();
                 }
@@ -244,7 +237,7 @@ public class XposedShelling {
                 }
 
                 if (currentThread == null || !currentThread.isAlive()) {
-                    log("Thread " + threadId + " is not running");
+                    LogUtil.d("Thread " + threadId + " is not running");
                     return;
                 }
 
@@ -260,7 +253,7 @@ public class XposedShelling {
                 try {
                     bytes = (byte[]) getBytes.invoke(dex);
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    log(e);
+                    LogUtil.e(e);
                     return;
                 }
 

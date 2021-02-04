@@ -11,9 +11,9 @@ import android.widget.ScrollView;
 
 import com.fuckcoolapk.AppConfigKt;
 import com.fuckcoolapk.BuildConfig;
-import com.fuckcoolapk.utils.AppUtil;
+import com.fuckcoolapk.utils.AppUtilKt;
 import com.fuckcoolapk.utils.CoolapkContext;
-import com.fuckcoolapk.utils.Log;
+import com.fuckcoolapk.utils.LogUtil;
 import com.fuckcoolapk.utils.OwnSP;
 import com.fuckcoolapk.view.ClickableTextViewForHook;
 import com.fuckcoolapk.view.SwitchForHook;
@@ -71,7 +71,7 @@ public class HookSettings {
                 }
             });
         } catch (Throwable e) {
-            Log.e(e);
+            LogUtil.e(e);
         }
     }
 
@@ -83,7 +83,7 @@ public class HookSettings {
         LinearLayout linearLayout = new LinearLayout(CoolapkContext.activity);
         scrollView.addView(linearLayout);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setPadding(AppUtil.dp2px(CoolapkContext.context, 20), AppUtil.dp2px(CoolapkContext.context, 10), AppUtil.dp2px(CoolapkContext.context, 20), AppUtil.dp2px(CoolapkContext.context, 5));
+        linearLayout.setPadding(AppUtilKt.dp2px(CoolapkContext.context, 20), AppUtilKt.dp2px(CoolapkContext.context, 10), AppUtilKt.dp2px(CoolapkContext.context, 20), AppUtilKt.dp2px(CoolapkContext.context, 5));
         linearLayout.addView(new TextViewForHook(CoolapkContext.activity, "Fuck Coolapk", TextViewForHook.titleSize, null));
         linearLayout.addView(new TextViewForHook(CoolapkContext.activity, BuildConfig.VERSION_NAME + " " + BuildConfig.VERSION_CODE + " " + BuildConfig.BUILD_TYPE+"\nTarget Version: "+ AppConfigKt.MODULE_TARGET_VERSION, null, null));
         linearLayout.addView(new TextViewForHook(CoolapkContext.activity, "功能", TextViewForHook.title2Size, TextViewForHook.coolapkColor));
@@ -98,10 +98,11 @@ public class HookSettings {
         linearLayout.addView(new TextViewForHook(CoolapkContext.activity, "调试", TextViewForHook.title2Size, TextViewForHook.coolapkColor));
         //linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "临时输出统计内容", OwnSP.INSTANCE.getOwnSP(), "statisticToast", false));
         linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "对 酷安 进行脱壳", OwnSP.INSTANCE.getOwnSP(), "shouldShelling", false, "仅适用于 Android P 以前的版本。\n重启应用后开始脱壳，文件存放在 /data/data/com.coolapk.market/fuck_coolapk_shell。"));
+        linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "输出调试 Toast", OwnSP.INSTANCE.getOwnSP(), "showLogToast", false));
         linearLayout.addView(new TextViewForHook(CoolapkContext.activity, "信息", TextViewForHook.title2Size, TextViewForHook.coolapkColor));
         linearLayout.addView(new ClickableTextViewForHook(CoolapkContext.activity, "Xposed Module Repository", null, null, view -> CoolapkContext.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://repo.xposed.info/module/com.fuckcoolapk")))));
-        linearLayout.addView(new ClickableTextViewForHook(CoolapkContext.activity, "GitHub", null, null, view -> CoolapkContext.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lz233/FuckCoolapk")))));
-        linearLayout.addView(new ClickableTextViewForHook(CoolapkContext.activity, "FAQ", null, null, view -> CoolapkContext.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lz233/FuckCoolapk/wiki/FAQ")))));
+        linearLayout.addView(new ClickableTextViewForHook(CoolapkContext.activity, "GitHub", null, null, view -> CoolapkContext.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/FuckCoolapk/FuckCoolapk")))));
+        linearLayout.addView(new ClickableTextViewForHook(CoolapkContext.activity, "FAQ", null, null, view -> CoolapkContext.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/FuckCoolapk/FuckCoolapk/wiki/FAQ")))));
         normalDialog.setView(scrollView);
         normalDialog.setPositiveButton("重启应用",
                 (dialog, which) -> {

@@ -12,8 +12,10 @@ class RemoveAuditWatermark {
         if (OwnSP.ownSP.getBoolean("removeAuditWatermark", false)) {
             XposedHelpers.findClass("com.coolapk.market.binding.ViewBindingAdapters", CoolapkContext.classLoader)
                     .hookAfterMethod("updateFeed", "com.coolapk.market.widget.ForegroundTextView", "com.coolapk.market.model.Feed") {
-                        val foregroundTextView = it.args[0] as View
-                        foregroundTextView.visibility = View.GONE
+                        if (it.args[0] != null) {
+                            val foregroundTextView = (it.args[0] as View)
+                            foregroundTextView.visibility = View.GONE
+                        }
                     }
             XposedHelpers.findClass("com.coolapk.market.view.feed.FeedDetailActivityV8", CoolapkContext.classLoader)
                     .hookAfterMethod("installForegroundTextView", "com.coolapk.market.model.Feed") {

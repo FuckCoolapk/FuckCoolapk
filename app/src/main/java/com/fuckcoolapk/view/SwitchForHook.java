@@ -9,7 +9,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.fuckcoolapk.utils.AppUtil;
+import com.fuckcoolapk.utils.AppUtilKt;
+
 
 public class SwitchForHook extends Switch {
     public SwitchForHook(Context context) {
@@ -56,13 +57,13 @@ public class SwitchForHook extends Switch {
     }
 
     {
-        if (AppUtil.isNightMode(super.getContext())) {
+        if (AppUtilKt.isNightMode(super.getContext())) {
             this.setTextColor(Color.WHITE);
         } else {
             this.setTextColor(Color.BLACK);
         }
         //this.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#ff109d58")));
         //this.setForegroundTintList(ColorStateList.valueOf(Color.parseColor("#ff109d58")));
-        this.setPadding(AppUtil.dp2px(super.getContext(), 10), AppUtil.dp2px(super.getContext(), 10), AppUtil.dp2px(super.getContext(), 10), AppUtil.dp2px(super.getContext(), 10));
+        this.setPadding(AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10));
     }
 }

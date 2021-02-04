@@ -8,12 +8,10 @@ import android.os.Bundle
 import com.fuckcoolapk.module.*
 import com.fuckcoolapk.utils.CoolapkContext
 import com.fuckcoolapk.utils.FileUtil
-import com.fuckcoolapk.utils.Log
+import com.fuckcoolapk.utils.LogUtil
 import com.fuckcoolapk.utils.OwnSP
-import com.fuckcoolapk.utils.ktx.findClass
 import com.fuckcoolapk.utils.ktx.hookAfterAllMethods
 import com.fuckcoolapk.utils.ktx.hookAfterMethod
-import com.fuckcoolapk.utils.ktx.hookAllMethods
 import com.sfysoft.android.xposed.shelling.XposedShelling
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XposedHelpers
@@ -30,12 +28,12 @@ class InitHook : IXposedHookLoadPackage {
                         CoolapkContext.context = it.args[0] as Context
                         //获取 classloader
                         CoolapkContext.classLoader = CoolapkContext.context.classLoader
-                        Log.d(CoolapkContext.context.packageName)
+                        LogUtil.d(CoolapkContext.context.packageName)
                         //获取 activity
                         XposedHelpers.findClass("android.app.Instrumentation", CoolapkContext.classLoader)
                                 .hookAfterAllMethods("newActivity") { activityParam ->
                                     CoolapkContext.activity = activityParam.result as Activity
-                                    Log.d("Current activity: ${CoolapkContext.activity.javaClass}")
+                                    LogUtil.d("Current activity: ${CoolapkContext.activity.javaClass}")
                                 }
                         //脱壳
                         XposedShelling.runShelling(lpparam)
@@ -52,7 +50,7 @@ class InitHook : IXposedHookLoadPackage {
                                         }
                                     }
                         } catch (e: Throwable) {
-                            Log.e(e)
+                            LogUtil.e(e)
                         }
                         //关闭反 xposed
                         DisableAntiXposed().init()
@@ -70,6 +68,8 @@ class InitHook : IXposedHookLoadPackage {
                         EnableAdminMode().init()
                         //去除动态审核的水印
                         RemoveAuditWatermark().init()
+                        //临时去除图片水印
+                        ModifyPictureWatermark().init()
                     }
         }
     }
