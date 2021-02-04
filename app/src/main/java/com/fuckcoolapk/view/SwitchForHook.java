@@ -10,9 +10,21 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.fuckcoolapk.utils.AppUtilKt;
+import com.fuckcoolapk.utils.LogUtil;
 
 
 public class SwitchForHook extends Switch {
+    {
+        if (AppUtilKt.isNightMode(super.getContext())) {
+            this.setTextColor(Color.WHITE);
+        } else {
+            this.setTextColor(Color.BLACK);
+        }
+        //this.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#ff109d58")));
+        //this.setForegroundTintList(ColorStateList.valueOf(Color.parseColor("#ff109d58")));
+        this.setPadding(AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10));
+    }
+
     public SwitchForHook(Context context) {
         super(context);
     }
@@ -46,7 +58,7 @@ public class SwitchForHook extends Switch {
         this.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
                 if (toastText != null) {
-                    Toast.makeText(super.getContext(), toastText, Toast.LENGTH_SHORT).show();
+                    LogUtil.INSTANCE.toast(toastText,true);
                 }
                 editor.putBoolean(key, true);
             } else {
@@ -54,16 +66,5 @@ public class SwitchForHook extends Switch {
             }
             editor.apply();
         });
-    }
-
-    {
-        if (AppUtilKt.isNightMode(super.getContext())) {
-            this.setTextColor(Color.WHITE);
-        } else {
-            this.setTextColor(Color.BLACK);
-        }
-        //this.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#ff109d58")));
-        //this.setForegroundTintList(ColorStateList.valueOf(Color.parseColor("#ff109d58")));
-        this.setPadding(AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10));
     }
 }

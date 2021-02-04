@@ -16,7 +16,8 @@ object CoolapkSP {
         }
         coolapkEditor.apply()
     }
-    fun remove(key: String){
+
+    fun remove(key: String) {
         coolapkEditor.remove(key)
         coolapkEditor.apply()
     }

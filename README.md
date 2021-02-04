@@ -4,7 +4,6 @@
 
 # ~~Want~~ To Do
 
-- [ ] 对私信开启反和谐
 - [ ] 对图文开启 Markdown
 - [ ] 防检测 SharedPreferences
 
@@ -13,8 +12,9 @@
 - [x] 去除开屏广告
 - [x] 去除动态审核水印
 - [x] 管理员模式
-- [x] 关闭 Bugly 和 Umeng
+- [x] 对私信开启反和谐
 - [x] 临时关闭图片水印
+- [x] 关闭 Bugly 和 Umeng
 - [x] 对 酷安 进行脱壳
 - [x] 隐藏模块
 - [x] ~~临时显示统计 Toast~~

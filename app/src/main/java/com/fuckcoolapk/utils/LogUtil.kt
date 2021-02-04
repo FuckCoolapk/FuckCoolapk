@@ -1,4 +1,5 @@
 package com.fuckcoolapk.utils
+
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
@@ -11,10 +12,10 @@ object LogUtil {
     private val handler by lazy { Handler(Looper.getMainLooper()) }
     private val toast by lazy { Toast.makeText(CoolapkContext.activity, "", Toast.LENGTH_SHORT) }
 
-    private fun toast(msg: String) {
-        if (!OwnSP.ownSP.getBoolean("showLogToast", false)) return
+    fun toast(msg: String, force: Boolean) {
+        if (!force && !OwnSP.ownSP.getBoolean("showLogToast", false)) return
         handler.post {
-            toast.setText("$TAG: $msg")
+            toast.setText(msg)
             toast.show()
         }
     }
@@ -34,7 +35,7 @@ object LogUtil {
             }
         } else {
             f(TAG, str)
-            toast(str)
+            toast(str,false)
             if (toXposed)
                 XposedBridge.log("$TAG : $str")
         }

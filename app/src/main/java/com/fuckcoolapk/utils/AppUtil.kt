@@ -2,7 +2,6 @@ package com.fuckcoolapk.utils
 
 import android.content.Context
 import android.content.res.Configuration
-import java.lang.reflect.Field
 
 
 fun dp2px(context: Context, dpValue: Float): Int = (dpValue * context.resources.displayMetrics.density + 0.5f).toInt()

@@ -16,7 +16,8 @@ object OwnSP {
         }
         ownEditor.apply()
     }
-    fun remove(key: String){
+
+    fun remove(key: String) {
         ownEditor.remove(key)
         ownEditor.apply()
     }

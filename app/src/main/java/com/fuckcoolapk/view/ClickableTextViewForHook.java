@@ -22,11 +22,12 @@ public class ClickableTextViewForHook extends TextViewForHook {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public ClickableTextViewForHook(Context context, String text, @Nullable Float size, @Nullable String color,OnClickListener onClickListener) {
-        super(context,text,size,color);
+    public ClickableTextViewForHook(Context context, String text, @Nullable Float size, @Nullable String color, OnClickListener onClickListener) {
+        super(context, text, size, color);
         init(onClickListener);
     }
-    private void init(OnClickListener onClickListener){
+
+    private void init(OnClickListener onClickListener) {
         this.setOnClickListener(onClickListener);
     }
 }

@@ -247,7 +247,7 @@ public class FileUtil {
         }
         PackageManager pm = context.getPackageManager();
         List<PackageInfo> packageInfoList = pm.getInstalledPackages(0);
-        for (PackageInfo info: packageInfoList) {
+        for (PackageInfo info : packageInfoList) {
             if (info.packageName.equals("me.weishu.exp")) {
                 return true;
             }

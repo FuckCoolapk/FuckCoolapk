@@ -11,9 +11,13 @@ import com.fuckcoolapk.utils.AppUtilKt;
 import com.fuckcoolapk.utils.CoolapkContext;
 
 public class TextViewForHook extends TextView {
-    public static float titleSize = AppUtilKt.dp2px(CoolapkContext.context, 10f);
-    public static float title2Size = AppUtilKt.dp2px(CoolapkContext.context, 8f);
+    public static float titleSize = AppUtilKt.sp2px(CoolapkContext.context, 10f);
+    public static float title2Size = AppUtilKt.sp2px(CoolapkContext.context, 8f);
     public static String coolapkColor = "#ff109d58";
+
+    {
+        this.setPadding(AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10));
+    }
 
     public TextViewForHook(Context context) {
         super(context);
@@ -50,9 +54,5 @@ public class TextViewForHook extends TextView {
                 this.setTextColor(Color.BLACK);
             }
         }
-    }
-
-    {
-        this.setPadding(AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10));
     }
 }

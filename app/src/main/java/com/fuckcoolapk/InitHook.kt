@@ -70,6 +70,10 @@ class InitHook : IXposedHookLoadPackage {
                         RemoveAuditWatermark().init()
                         //临时去除图片水印
                         ModifyPictureWatermark().init()
+                        //开启频道自由编辑
+                        EnableChannelEdit().init()
+                        //对私信开启反和谐
+                        AntiMessageCensorship().init()
                     }
         }
     }
