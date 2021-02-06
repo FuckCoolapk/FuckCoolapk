@@ -74,6 +74,8 @@ class InitHook : IXposedHookLoadPackage {
                         EnableChannelEdit().init()
                         //对私信开启反和谐
                         AntiMessageCensorship().init()
+                        //关闭链接追踪
+                        DisableURLTracking().init()
                     }
         }
     }

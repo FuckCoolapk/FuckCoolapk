@@ -10,13 +10,11 @@ import android.util.Log as ALog
 object LogUtil {
 
     private val handler by lazy { Handler(Looper.getMainLooper()) }
-    private val toast by lazy { Toast.makeText(CoolapkContext.activity, "", Toast.LENGTH_SHORT) }
 
     fun toast(msg: String, force: Boolean) {
         if (!force && !OwnSP.ownSP.getBoolean("showLogToast", false)) return
         handler.post {
-            toast.setText(msg)
-            toast.show()
+            Toast.makeText(CoolapkContext.context, msg, Toast.LENGTH_SHORT).show()
         }
     }
 
