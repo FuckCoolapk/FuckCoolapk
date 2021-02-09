@@ -18,16 +18,14 @@ class AntiMessageCensorship {
     private var isEnable = false
     fun init() {
         if (OwnSP.ownSP.getBoolean("antiMessageCensorship", false)) {
-            XposedHelpers.findClass("com.coolapk.market.view.message.ChattingActivity", CoolapkContext.classLoader)
-                    .hookAfterMethod("initData") {
+            XposedHelpers.findClass("com.coolapk.market.view.message.ChattingActivity", CoolapkContext.classLoader).hookAfterMethod("initData") {
                         activity = it.thisObject as Activity
                         val userID = activity.intent.getStringExtra("USER_ID")
                         //请勿删除，否则后果自负！
                         isEnable = userID !in listOf("798985", "917649", "12202", "10002", "97100", "408649", "662435", "1353127", "1603081", "413952", "499228", "514025", "427832", "1123602", "897371", "611629", "899823")
                         if (!isEnable) LogUtil.toast("私信反和谐已关闭", true)
                     }
-            XposedHelpers.findClass("com.coolapk.market.view.message.ChattingActivity", CoolapkContext.classLoader)
-                    .hookBeforeMethod("sendMessage", String::class.java, String::class.java, String::class.java) {
+            XposedHelpers.findClass("com.coolapk.market.view.message.ChattingActivity", CoolapkContext.classLoader).hookBeforeMethod("sendMessage", String::class.java, String::class.java, String::class.java) {
                         if (isEnable) {
                             charBuilder.clear()
                             val jsonObject = JSONObject(d)
@@ -51,8 +49,7 @@ class AntiMessageCensorship {
                             }
                         }
                     }
-            XposedHelpers.findClass("com.coolapk.market.view.message.ChattingActivity\$sendMessage$2", CoolapkContext.classLoader)
-                    .hookAfterMethod("onCompleted") {
+            XposedHelpers.findClass("com.coolapk.market.view.message.ChattingActivity\$sendMessage$2", CoolapkContext.classLoader).hookAfterMethod("onCompleted") {
                         if (isEnable && (charBuilder.toString() != "")) {
                             LogUtil.toast("已替换 $charBuilder", true)
                         }
