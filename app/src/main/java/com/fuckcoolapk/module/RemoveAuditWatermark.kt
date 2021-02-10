@@ -19,7 +19,7 @@ class RemoveAuditWatermark {
                     }
             XposedHelpers.findClass("com.coolapk.market.view.feed.FeedDetailActivityV8", CoolapkContext.classLoader)
                     .hookAfterMethod("installForegroundTextView", "com.coolapk.market.model.Feed") {
-                        val foregroundTextView = it.thisObject.getObjectField("foregroundTextView") as View
+                        val foregroundTextView = it.thisObject.getObjectField("foregroundTextView") as? View ?: return@hookAfterMethod
                         foregroundTextView.visibility = View.GONE
                     }
         }
