@@ -4,6 +4,8 @@
 
 # ~~Want~~ To Do
 
+- [ ] 集成 Microsoft Appcenter，上传使用者 UID
+- [ ] 更新使用协议
 - [ ] 对图文开启 Markdown
 - [ ] 防检测 SharedPreferences
 

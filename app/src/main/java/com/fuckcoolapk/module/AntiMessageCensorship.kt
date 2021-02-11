@@ -42,11 +42,7 @@ class AntiMessageCensorship {
                                 }
                                 if (message[i] == ']') isEnable = true
                             }
-                            if (messageBuilder.length <= 8) {
-                                it.args[0] = "\u202e${messageBuilder.reversed()}"
-                            } else {
-                                it.args[0] = messageBuilder.toString()
-                            }
+                            it.args[0] = messageBuilder.toString()
                         }
                     }
             XposedHelpers.findClass("com.coolapk.market.view.message.ChattingActivity\$sendMessage$2", CoolapkContext.classLoader).hookAfterMethod("onCompleted") {
