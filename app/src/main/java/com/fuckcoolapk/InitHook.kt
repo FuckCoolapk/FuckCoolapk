@@ -60,8 +60,9 @@ class InitHook : IXposedHookLoadPackage {
                                                 put("isAdmin", (loginSession.callMethod("isAdmin") as Boolean).toString())
                                             })
                                         }
-                                        if (!OwnSP.ownSP.getBoolean("agreeEULA",false)){
-                                            GetUtil().sendGet("https://cdn.jsdelivr.net/gh/FuckCoolapk/FuckCoolapk/README.md") { result ->
+                                        if (!OwnSP.ownSP.getBoolean("agreeEULA", false)) {
+                                            val useFastgit = true
+                                            GetUtil().sendGet(if (useFastgit) "https://hub.fastgit.org/FuckCoolapk/FuckCoolapk/raw/master/EULA.md" else "https://cdn.jsdelivr.net/gh/FuckCoolapk/FuckCoolapk/EULA.md") { result ->
                                                 String
                                                 showEulaDialog(CoolapkContext.activity, result)
                                             }
@@ -110,7 +111,7 @@ class InitHook : IXposedHookLoadPackage {
             orientation = LinearLayout.VERTICAL
             setPadding(dp2px(CoolapkContext.context, 20f), dp2px(CoolapkContext.context, 10f), dp2px(CoolapkContext.context, 20f), dp2px(CoolapkContext.context, 5f))
             //addView(TextViewForHook(CoolapkContext.activity, "Fuck Coolapk 最终用户许可协议与隐私条款", TextViewForHook.titleSize, null))
-            val message = TextViewForHook(CoolapkContext.activity,"",TextViewForHook.textSize,null)
+            val message = TextViewForHook(CoolapkContext.activity, "", TextViewForHook.textSize, null)
             markwon.setMarkdown(message, eula)
             addView(message)
         }
