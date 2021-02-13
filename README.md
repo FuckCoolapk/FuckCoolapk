@@ -27,4 +27,4 @@
 
 # License
 
-[AMTPL v1 + WTFPL v2](LICENSE)
+[AMTPL v1 + GPL-3.0](LICENSE)
