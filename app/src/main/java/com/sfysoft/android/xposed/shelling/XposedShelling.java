@@ -57,7 +57,7 @@ public class XposedShelling {
     public static void runShelling(XC_LoadPackage.LoadPackageParam lpparam) {
         if (OwnSP.INSTANCE.getOwnSP().getBoolean("shouldShelling", false)) {
             OwnSP.INSTANCE.set("shouldShelling", false);
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 String packageName = lpparam.packageName;
                 LogUtil.d("Load package: " + packageName);
                 boolean found = false;

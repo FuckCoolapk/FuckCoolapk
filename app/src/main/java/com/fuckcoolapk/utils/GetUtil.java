@@ -50,7 +50,7 @@ public class GetUtil {
     }
 
     /**
-     * 使用异步任务来翻译，翻译完成后回调callback
+     * 使用异步任务来请求，翻译完成后回调callback
      */
     static class GetTask extends AsyncTask<Void, Void, String> {
         String getUrl;

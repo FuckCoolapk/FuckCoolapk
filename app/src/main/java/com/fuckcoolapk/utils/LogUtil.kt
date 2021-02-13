@@ -11,7 +11,7 @@ object LogUtil {
 
     private val handler by lazy { Handler(Looper.getMainLooper()) }
 
-    fun toast(msg: String, force: Boolean) {
+    fun toast(msg: String, force: Boolean=true) {
         if (!force && !OwnSP.ownSP.getBoolean("showLogToast", false)) return
         handler.post {
             Toast.makeText(CoolapkContext.context, msg, Toast.LENGTH_SHORT).show()

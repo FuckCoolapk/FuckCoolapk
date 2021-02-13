@@ -13,6 +13,7 @@ import com.fuckcoolapk.utils.CoolapkContext;
 public class TextViewForHook extends TextView {
     public static float titleSize = AppUtilKt.sp2px(CoolapkContext.context, 10f);
     public static float title2Size = AppUtilKt.sp2px(CoolapkContext.context, 8f);
+    public static float textSize = AppUtilKt.sp2px(CoolapkContext.context, 6f);
     public static String coolapkColor = "#ff109d58";
 
     {
