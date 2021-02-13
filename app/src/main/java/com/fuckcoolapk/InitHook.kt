@@ -115,7 +115,10 @@ class InitHook : IXposedHookLoadPackage {
             markwon.setMarkdown(message, eula)
             addView(message)
         }
-        dialogBuilder.setView(ScrollView(CoolapkContext.activity).apply { addView(linearLayout) })
+        dialogBuilder.setView(ScrollView(CoolapkContext.activity).apply {
+            overScrollMode = 2
+            addView(linearLayout)
+        })
         dialogBuilder.setNegativeButton("不同意") { dialogInterface: DialogInterface, i: Int ->
             LogUtil.toast("请转到 Xposed 管理器关闭此模块")
             Thread {

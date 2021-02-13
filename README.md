@@ -4,8 +4,6 @@
 
 # ~~Want~~ To Do
 
-- [ ] 集成 Microsoft Appcenter，上传使用者 UID
-- [ ] 更新使用协议
 - [ ] 对图文开启 Markdown
 - [ ] 防检测 SharedPreferences
 
@@ -19,6 +17,7 @@
 - [x] 关闭 Bugly 和 Umeng
 - [x] 对 酷安 进行脱壳
 - [x] 隐藏模块
+- [x] 集成 Microsoft Appcenter，上传使用者 UID
 - [x] ~~临时显示统计 Toast~~
 - [x] ~~动态状态检查~~
 
