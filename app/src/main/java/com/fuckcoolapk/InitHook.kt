@@ -24,7 +24,6 @@ import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.noties.markwon.Markwon
-import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import kotlin.system.exitProcess
 
 
@@ -60,26 +59,19 @@ class InitHook : IXposedHookLoadPackage {
                                                 put("isAdmin", (loginSession.callMethod("isAdmin") as Boolean).toString())
                                             })
                                         }
-                                        if (!OwnSP.ownSP.getBoolean("agreeEULA", false)) {
-                                            val useFastgit = true
-                                            GetUtil().sendGet(if (useFastgit) "https://hub.fastgit.org/FuckCoolapk/FuckCoolapk/raw/master/EULA.md" else "https://cdn.jsdelivr.net/gh/FuckCoolapk/FuckCoolapk/EULA.md") { result ->
-                                                String
-                                                showEulaDialog(CoolapkContext.activity, result)
-                                            }
-                                        }
                                     }
                         } catch (e: Throwable) {
                             LogUtil.e(e)
                         }
+                        //关闭反 xposed
+                        DisableAntiXposed().init()
+                        //隐藏模块
+                        HideModule().init()
+                        //hook 设置
+                        HookSettings().init()
                         if (OwnSP.ownSP.getBoolean("agreeEULA", false)) {
                             //脱壳
                             XposedShelling.runShelling(lpparam)
-                            //关闭反 xposed
-                            DisableAntiXposed().init()
-                            //隐藏模块
-                            HideModule().init()
-                            //hook 设置
-                            HookSettings().init()
                             //去除开屏广告
                             RemoveStartupAds().init()
                             //关闭友盟
@@ -98,66 +90,67 @@ class InitHook : IXposedHookLoadPackage {
                             AntiMessageCensorship().init()
                             //关闭链接追踪
                             DisableURLTracking().init()
+                            //开启动态 Markdown
+                            EnableMarkdown().init()
                         }
                     }
         }
     }
-
-    private fun showEulaDialog(activity: Activity, eula: String) {
-        val markwon = Markwon.builder(CoolapkContext.activity).usePlugin(SoftBreakAddsNewLinePlugin.create()).build()
-        var time = 30
-        val dialogBuilder = AlertDialog.Builder(activity)
-        val linearLayout = LinearLayout(activity).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp2px(CoolapkContext.context, 20f), dp2px(CoolapkContext.context, 10f), dp2px(CoolapkContext.context, 20f), dp2px(CoolapkContext.context, 5f))
-            //addView(TextViewForHook(CoolapkContext.activity, "Fuck Coolapk 最终用户许可协议与隐私条款", TextViewForHook.titleSize, null))
-            val message = TextViewForHook(CoolapkContext.activity, "", TextViewForHook.textSize, null)
-            markwon.setMarkdown(message, eula)
-            addView(message)
-        }
-        dialogBuilder.setView(ScrollView(CoolapkContext.activity).apply {
-            overScrollMode = 2
-            addView(linearLayout)
-        })
-        dialogBuilder.setNegativeButton("不同意") { dialogInterface: DialogInterface, i: Int ->
-            LogUtil.toast("请转到 Xposed 管理器关闭此模块")
-            Thread {
-                Thread.sleep(1500)
-                exitProcess(0)
-            }.start()
-        }
-        dialogBuilder.setPositiveButton("我已阅读并同意本协议") { dialogInterface: DialogInterface, i: Int ->
-            //OwnSP.set("agreeEULA", true)
-            LogUtil.toast("重新启动 酷安 后生效")
-            Thread {
-                Thread.sleep(1500)
-                exitProcess(0)
-            }.start()
-        }
-        dialogBuilder.setCancelable(false)
-        val dialog = dialogBuilder.show()
-        val negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-        val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-        when (isNightMode(CoolapkContext.context)) {
-            false -> run {
-                negativeButton.setTextColor(Color.BLACK)
-                positiveButton.setTextColor(Color.BLACK)
-            }
-            true -> run {
-                negativeButton.setTextColor(Color.WHITE)
-                positiveButton.setTextColor(Color.WHITE)
-            }
-        }
-        positiveButton.isClickable = false
+}
+fun showEulaDialog(activity: Activity, eula: String) {
+    val markwon = Markwon.builder(CoolapkContext.activity).build()
+    var time = 30
+    val dialogBuilder = AlertDialog.Builder(activity)
+    val linearLayout = LinearLayout(activity).apply {
+        orientation = LinearLayout.VERTICAL
+        setPadding(dp2px(CoolapkContext.context, 20f), dp2px(CoolapkContext.context, 10f), dp2px(CoolapkContext.context, 20f), dp2px(CoolapkContext.context, 5f))
+        //addView(TextViewForHook(CoolapkContext.activity, "Fuck Coolapk 最终用户许可协议与隐私条款", TextViewForHook.titleSize, null))
+        val message = TextViewForHook(CoolapkContext.activity, "", TextViewForHook.textSize, null)
+        markwon.setMarkdown(message, eula)
+        addView(message)
+    }
+    dialogBuilder.setView(ScrollView(CoolapkContext.activity).apply {
+        overScrollMode = 2
+        addView(linearLayout)
+    })
+    dialogBuilder.setNegativeButton("不同意") { dialogInterface: DialogInterface, i: Int ->
+        LogUtil.toast("请转到 Xposed 管理器关闭此模块")
         Thread {
-            do {
-                positiveButton.post { positiveButton.text = "我已阅读并同意本协议 (${time}s)" }
-                Thread.sleep(1000)
-            } while (--time != 0)
-            positiveButton.post {
-                positiveButton.text = "我已阅读并同意本协议"
-                positiveButton.isClickable = true
-            }
+            Thread.sleep(1500)
+            exitProcess(0)
         }.start()
     }
+    dialogBuilder.setPositiveButton("我已阅读并同意本协议") { dialogInterface: DialogInterface, i: Int ->
+        OwnSP.set("agreeEULA", true)
+        LogUtil.toast("重新启动 酷安 后生效")
+        Thread {
+            Thread.sleep(1500)
+            exitProcess(0)
+        }.start()
+    }
+    dialogBuilder.setCancelable(false)
+    val dialog = dialogBuilder.show()
+    val negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+    val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+    when (isNightMode(CoolapkContext.context)) {
+        false -> run {
+            negativeButton.setTextColor(Color.BLACK)
+            positiveButton.setTextColor(Color.BLACK)
+        }
+        true -> run {
+            negativeButton.setTextColor(Color.WHITE)
+            positiveButton.setTextColor(Color.WHITE)
+        }
+    }
+    positiveButton.isClickable = false
+    Thread {
+        do {
+            positiveButton.post { positiveButton.text = "我已阅读并同意本协议 (${time}s)" }
+            Thread.sleep(1000)
+        } while (--time != 0)
+        positiveButton.post {
+            positiveButton.text = "我已阅读并同意本协议"
+            positiveButton.isClickable = true
+        }
+    }.start()
 }

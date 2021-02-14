@@ -11,8 +11,11 @@ import android.widget.ScrollView;
 
 import com.fuckcoolapk.AppConfigKt;
 import com.fuckcoolapk.BuildConfig;
+import com.fuckcoolapk.InitHook;
+import com.fuckcoolapk.InitHookKt;
 import com.fuckcoolapk.utils.AppUtilKt;
 import com.fuckcoolapk.utils.CoolapkContext;
+import com.fuckcoolapk.utils.GetUtil;
 import com.fuckcoolapk.utils.LogUtil;
 import com.fuckcoolapk.utils.OwnSP;
 import com.fuckcoolapk.view.ClickableTextViewForHook;
@@ -36,7 +39,7 @@ public class HookSettings {
                     fuckcoolapkHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "entityType", "holder_item");
                     Object lineHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "intValue", 14);
                     lineHolderItem = XposedHelpers.callMethod(lineHolderItem, "build");
-                    fuckcoolapkHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "string", "Fuck Coolapk");
+                    fuckcoolapkHolderItem = OwnSP.INSTANCE.getOwnSP().getBoolean("agreeEULA",false)?XposedHelpers.callMethod(fuckcoolapkHolderItem, "string", "Fuck Coolapk"):XposedHelpers.callMethod(fuckcoolapkHolderItem, "string", "Fuck Coolapk（未激活）");
                     fuckcoolapkHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "intValue", 233);
                     fuckcoolapkHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "build");
                     List list = (List) XposedHelpers.callMethod(param.thisObject, "getDataList");
@@ -57,12 +60,18 @@ public class HookSettings {
                             Integer intValue = (Integer) XposedHelpers.callMethod(obj, "getIntValue");
                             //Log.v(AppConfig.TAG, intValue.toString());
                             if (intValue != null & intValue == 233 & !isOpen) {
-                                showSettingsDialog();
+                                if (OwnSP.INSTANCE.getOwnSP().getBoolean("agreeEULA",false)){
+                                    showSettingsDialog();
+                                }else {
+                                    boolean useFastgit = true;
+                                    new GetUtil().sendGet(useFastgit ? "https://hub.fastgit.org/FuckCoolapk/FuckCoolapk/raw/master/EULA.md" : "https://cdn.jsdelivr.net/gh/FuckCoolapk/FuckCoolapk/EULA.md", new GetUtil.GetCallback() {
+                                        @Override
+                                        public void onGetDone(String result) {
+                                            InitHookKt.showEulaDialog(CoolapkContext.activity,result);
+                                        }
+                                    });
+                                }
                                 isOpen = true;
-                            /*Object settingActivity = XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.coolapk.market.view.base.SimpleActivity",classLoader),"builder",InitHook.activity);
-                            settingActivity=XposedHelpers.callMethod(settingActivity,"fragmentClass",XposedHelpers.findClass("com.coolapk.market.view.settings.VXSettingsFragment",classLoader));
-                            settingActivity=XposedHelpers.callMethod(settingActivity,"title","Fuck CoolApk");
-                            XposedHelpers.callMethod(settingActivity,"start");*/
                             }
                             super.beforeHookedMethod(param);
                         }
@@ -77,7 +86,6 @@ public class HookSettings {
 
     private void showSettingsDialog() {
         final AlertDialog.Builder normalDialog = new AlertDialog.Builder(CoolapkContext.activity);
-        //normalDialog.setTitle("Fuck CoolApk");
         ScrollView scrollView = new ScrollView(CoolapkContext.activity);
         scrollView.setOverScrollMode(2);
         LinearLayout linearLayout = new LinearLayout(CoolapkContext.activity);
@@ -90,7 +98,7 @@ public class HookSettings {
         linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "去除启动广告", OwnSP.INSTANCE.getOwnSP(), "removeStartupAds", false));
         linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "去除动态审核水印", OwnSP.INSTANCE.getOwnSP(), "removeAuditWatermark", false));
         //linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "开启频道自由编辑", OwnSP.INSTANCE.getOwnSP(), "enableChannelEdit", false));
-        linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "对图文开启 Markdown（没实装）", OwnSP.INSTANCE.getOwnSP(), "enableMarkdown", false));
+        linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "对动态开启 Markdown（Alpha）", OwnSP.INSTANCE.getOwnSP(), "enableMarkdown", false));
         linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "对私信开启反和谐", OwnSP.INSTANCE.getOwnSP(), "antiMessageCensorship", false, "通过自动替换相似字来达到反和谐的效果，不能保证一定有效。\n请勿滥用，请勿用于除私信外的其他地方，否则后果自负。"));
         if (BuildConfig.BUILD_TYPE.equals("debug")) {
             linearLayout.addView(new SwitchForHook(CoolapkContext.activity, "管理员模式", OwnSP.INSTANCE.getOwnSP(), "adminMode", false));
