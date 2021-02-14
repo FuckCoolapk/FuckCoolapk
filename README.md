@@ -4,14 +4,14 @@
 
 # ~~Want~~ To Do
 
-- [ ] 对图文开启 Markdown
 - [ ] 防检测 SharedPreferences
 
 # Features
 
 - [x] 去除开屏广告
 - [x] 去除动态审核水印
-- [x] 管理员模式
+- [x] 对动态开启 Markdown
+- [x] ~~管理员模式~~
 - [x] 对私信开启反和谐
 - [x] 临时关闭图片水印
 - [x] 关闭 Bugly 和 Umeng
@@ -23,7 +23,14 @@
 
 # Third party license
 
-[commons-codec](https://commons.apache.org/proper/commons-codec/) [okhttp](https://square.github.io/okhttp/#license) [XposedBridge](https://github.com/rovo89/XposedBridge) [androidx.annotation](https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/annotation/annotation/) [ApkShelling](https://github.com/OakChen/ApkShelling) [BiliRoaming](https://github.com/yujincheng08/BiliRoaming/blob/master/LICENSE) [unvcode](https://github.com/RimoChan/unvcode)
+[commons-codec](https://commons.apache.org/proper/commons-codec/)
+[okhttp](https://square.github.io/okhttp/#license)
+[XposedBridge](https://github.com/rovo89/XposedBridge)
+[androidx.annotation](https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/annotation/annotation/)
+[ApkShelling](https://github.com/OakChen/ApkShelling)
+[BiliRoaming](https://github.com/yujincheng08/BiliRoaming/blob/master/LICENSE)
+[unvcode](https://github.com/RimoChan/unvcode)
+[QNotified](https://github.com/ferredoxin/QNotified/blob/master/LICENSE)
 
 # License
 

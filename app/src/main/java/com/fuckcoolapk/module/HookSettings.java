@@ -39,7 +39,7 @@ public class HookSettings {
                     fuckcoolapkHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "entityType", "holder_item");
                     Object lineHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "intValue", 14);
                     lineHolderItem = XposedHelpers.callMethod(lineHolderItem, "build");
-                    fuckcoolapkHolderItem = OwnSP.INSTANCE.getOwnSP().getBoolean("agreeEULA",false)?XposedHelpers.callMethod(fuckcoolapkHolderItem, "string", "Fuck Coolapk"):XposedHelpers.callMethod(fuckcoolapkHolderItem, "string", "Fuck Coolapk（未激活）");
+                    fuckcoolapkHolderItem = OwnSP.INSTANCE.getOwnSP().getBoolean("agreeEULA", false) ? XposedHelpers.callMethod(fuckcoolapkHolderItem, "string", "Fuck Coolapk") : XposedHelpers.callMethod(fuckcoolapkHolderItem, "string", "Fuck Coolapk（未激活）");
                     fuckcoolapkHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "intValue", 233);
                     fuckcoolapkHolderItem = XposedHelpers.callMethod(fuckcoolapkHolderItem, "build");
                     List list = (List) XposedHelpers.callMethod(param.thisObject, "getDataList");
@@ -60,16 +60,11 @@ public class HookSettings {
                             Integer intValue = (Integer) XposedHelpers.callMethod(obj, "getIntValue");
                             //Log.v(AppConfig.TAG, intValue.toString());
                             if (intValue != null & intValue == 233 & !isOpen) {
-                                if (OwnSP.INSTANCE.getOwnSP().getBoolean("agreeEULA",false)){
+                                if (OwnSP.INSTANCE.getOwnSP().getBoolean("agreeEULA", false)) {
                                     showSettingsDialog();
-                                }else {
+                                } else {
                                     boolean useFastgit = true;
-                                    new GetUtil().sendGet(useFastgit ? "https://hub.fastgit.org/FuckCoolapk/FuckCoolapk/raw/master/EULA.md" : "https://cdn.jsdelivr.net/gh/FuckCoolapk/FuckCoolapk/EULA.md", new GetUtil.GetCallback() {
-                                        @Override
-                                        public void onGetDone(String result) {
-                                            InitHookKt.showEulaDialog(CoolapkContext.activity,result);
-                                        }
-                                    });
+                                    new GetUtil().sendGet(useFastgit ? "https://hub.fastgit.org/FuckCoolapk/FuckCoolapk/raw/master/EULA.md" : "https://cdn.jsdelivr.net/gh/FuckCoolapk/FuckCoolapk/EULA.md", result -> InitHookKt.showEulaDialog(CoolapkContext.activity, result));
                                 }
                                 isOpen = true;
                             }
@@ -115,10 +110,7 @@ public class HookSettings {
         linearLayout.addView(new ClickableTextViewForHook(CoolapkContext.activity, "GitHub", null, null, view -> CoolapkContext.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/FuckCoolapk/FuckCoolapk")))));
         linearLayout.addView(new ClickableTextViewForHook(CoolapkContext.activity, "FAQ", null, null, view -> CoolapkContext.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/FuckCoolapk/FuckCoolapk/wiki/FAQ")))));
         normalDialog.setView(scrollView);
-        normalDialog.setPositiveButton("重启应用",
-                (dialog, which) -> {
-                    System.exit(0);
-                });
+        normalDialog.setPositiveButton("重启应用", (dialog, which) -> System.exit(0));
         AlertDialog alertDialog = normalDialog.show();
         alertDialog.setOnDismissListener(dialogInterface -> isOpen = false);
         alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor(TextViewForHook.coolapkColor));

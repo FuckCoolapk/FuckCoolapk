@@ -21,7 +21,7 @@ class EnableMarkdown {
                     .hookBeforeMethod("convert", String::class.java, Int::class.javaPrimitiveType, Html.ImageGetter::class.java) {
                         val string = it.args[0] as String
                         it.args[0] = renderer.render(parser.parse(string))
-                        LogUtil.d(it.args[0] as String)
+                        //LogUtil.d(it.args[0] as String)
                     }
             XposedHelpers.findClass("android.text.Html", CoolapkContext.classLoader)
                     .hookBeforeMethod("fromHtml", String::class.java, Html.ImageGetter::class.java, Html.TagHandler::class.java) {}
