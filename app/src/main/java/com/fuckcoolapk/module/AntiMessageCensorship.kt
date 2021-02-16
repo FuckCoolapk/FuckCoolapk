@@ -22,6 +22,7 @@ class AntiMessageCensorship {
                         activity = it.thisObject as Activity
                         val userID = activity.intent.getStringExtra("USER_ID")
                         //请勿删除，否则后果自负！
+                        //alexkillers 酷安小编 阿酷 梨子 八百标兵 快乐球 好兆头 匿名游客 产品菜鸟吴日天 芮星晨 小黄Alpha Song_ 淡淡の伏特加 崇拜并不是爱 Bug小王子 实在没名可起了
                         isEnable = userID !in listOf("798985", "917649", "12202", "10002", "97100", "408649", "662435", "1353127", "1603081", "413952", "499228", "514025", "427832", "1123602", "897371", "611629", "899823")
                         if (!isEnable) LogUtil.toast("私信反和谐已关闭", true)
                     }

@@ -7,14 +7,18 @@ import com.fuckcoolapk.utils.LogUtil
 import com.fuckcoolapk.utils.OwnSP
 import com.fuckcoolapk.utils.ktx.*
 import de.robv.android.xposed.XposedHelpers
+import org.commonmark.Extension
+import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
 import org.commonmark.parser.Parser
 import org.commonmark.renderer.html.HtmlRenderer
+import java.util.*
 
 class EnableMarkdown {
     fun init() {
         if (OwnSP.ownSP.getBoolean("enableMarkdown",false)){
-            val parser = Parser.builder().build()
-            val renderer = HtmlRenderer.builder().build()
+            val extensions = listOf(StrikethroughExtension.create())
+            val parser = Parser.builder().extensions(extensions).build()
+            val renderer = HtmlRenderer.builder().extensions(extensions).build()
             XposedHelpers.findClass("com.coolapk.market.binding.TextViewBindingAdapters", CoolapkContext.classLoader)
                     .hookAfterMethod("setTextViewLinkable", TextView::class.java, String::class.java, "java.lang.Integer", String::class.java, Boolean::class.javaObjectType, Html.ImageGetter::class.java, String::class.java) {}
             XposedHelpers.findClass("com.coolapk.market.util.LinkTextUtils", CoolapkContext.classLoader)
