@@ -12,7 +12,7 @@ android {
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 30
         versionCode = date.format("yyyyMMdd").toInteger()
-        versionName '0.2.4'
+        versionName '0.3'
     }
     buildTypes {
         release {
@@ -40,6 +40,9 @@ dependencies {
     compileOnly 'de.robv.android.xposed:api:82'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'commons-codec:commons-codec:20041127.091804'
+    implementation 'com.huangyz0918:androidwm-light:0.1.2'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation "com.github.bumptech.glide:okhttp3-integration:4.12.0"
     //implementation 'com.squareup.okhttp3:okhttp:4.9.0'
 }
 dependencies {

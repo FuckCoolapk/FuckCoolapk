@@ -59,7 +59,7 @@ class InitHook : IXposedHookLoadPackage {
 
     private fun init(lpparam: XC_LoadPackage.LoadPackageParam, param: MethodHookParam) {
         //检查太极
-        FileUtil.getParamAvailability(param, Binder.getCallingPid())
+        //FileUtil.getParamAvailability(param, Binder.getCallingPid())
         LogUtil.d(CoolapkContext.context.packageName)
         //获取 activity
         XposedHelpers.findClass("android.app.Instrumentation", CoolapkContext.classLoader)
@@ -73,12 +73,11 @@ class InitHook : IXposedHookLoadPackage {
                     .hookAfterMethod("onCreate", Bundle::class.java) {
                         //appcenter
                         AppCenter.start(CoolapkContext.activity.application, "19597f3e-09e4-4422-9416-5dbc16cad3db", Analytics::class.java, Crashes::class.java)
-                        val loginSession = XposedHelpers.findClass("com.coolapk.market.manager.DataManager", CoolapkContext.classLoader).callStaticMethod("getInstance")?.callMethod("getLoginSession")
-                        if (loginSession?.callMethod("isLogin") as Boolean) {
-                            Analytics.trackEvent("user ${loginSession.callMethod("getUserName") as String}", HashMap<String, String>().apply {
-                                put("userName", loginSession.callMethod("getUserName") as String)
-                                put("UID", loginSession.callMethod("getUid") as String)
-                                put("isAdmin", (loginSession.callMethod("isAdmin") as Boolean).toString())
+                        if (CoolapkContext.loginSession.callMethod("isLogin") as Boolean) {
+                            Analytics.trackEvent("user ${CoolapkContext.loginSession.callMethod("getUserName") as String}", HashMap<String, String>().apply {
+                                put("userName", CoolapkContext.loginSession.callMethod("getUserName") as String)
+                                put("UID", CoolapkContext.loginSession.callMethod("getUid") as String)
+                                put("isAdmin", (CoolapkContext.loginSession.callMethod("isAdmin") as Boolean).toString())
                             })
                         }
                     }

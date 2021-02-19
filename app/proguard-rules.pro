@@ -20,3 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -keep public class com.fuckcoolapk.InitHook
+-assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+ public static void check*(...);
+ public static void throw*(...);
+}
