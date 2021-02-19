@@ -9,12 +9,12 @@ import androidx.annotation.Nullable;
 
 import com.fuckcoolapk.utils.AppUtilKt;
 import com.fuckcoolapk.utils.CoolapkContext;
+import com.fuckcoolapk.utils.CoolapkContextKt;
 
 public class TextViewForHook extends TextView {
     public static float titleSize = AppUtilKt.sp2px(CoolapkContext.context, 10f);
     public static float title2Size = AppUtilKt.sp2px(CoolapkContext.context, 8f);
     public static float textSize = AppUtilKt.sp2px(CoolapkContext.context, 6f);
-    public static String coolapkColor = "#ff109d58";
 
     {
         this.setPadding(AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10), AppUtilKt.dp2px(super.getContext(), 10));
