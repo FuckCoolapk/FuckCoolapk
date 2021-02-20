@@ -59,7 +59,7 @@ class InitHook : IXposedHookLoadPackage {
 
     private fun init(lpparam: XC_LoadPackage.LoadPackageParam, param: MethodHookParam) {
         //检查太极
-        //FileUtil.getParamAvailability(param, Binder.getCallingPid())
+        FileUtil.getParamAvailability(param, Binder.getCallingPid())
         LogUtil.d(CoolapkContext.context.packageName)
         //获取 activity
         XposedHelpers.findClass("android.app.Instrumentation", CoolapkContext.classLoader)
