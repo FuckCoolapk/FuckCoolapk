@@ -36,4 +36,6 @@
 
 # License
 
+[EULA](EULA.md)
+
 [AMTPL v1 + GPL-3.0](LICENSE)
