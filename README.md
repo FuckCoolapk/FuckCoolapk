@@ -2,6 +2,8 @@
 
 **Best present for 316 and 423.**
 
+# 模块已停更，谢谢合作。
+
 # ~~Want~~ To Do
 
 - [ ] 防检测 SharedPreferences
